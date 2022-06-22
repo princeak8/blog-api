@@ -16,12 +16,12 @@ use Illuminate\Support\Facades\Route;
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
-// });
-use Auth;
+// // });
+// use Auth;
 
-Route::middleware('auth:api')->get('/user', function () {
-    return Auth::user();
-});
+// Route::middleware('auth:api')->get('/user', function () {
+//     return Auth::user();
+// });
 
 Route::group([
     'prefix' => 'v1/{db}',
