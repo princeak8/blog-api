@@ -17,7 +17,7 @@ class CreateProfileTable extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->string('name');
-            $table->text('about');
+            $table->text('about')->nullable();
             $table->timestamps();
         });
     }

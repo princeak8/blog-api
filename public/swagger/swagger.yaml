@@ -1,0 +1,2947 @@
+swagger: "2.0"
+info:
+  description: "This is an API for Medicyne App"
+  version: "1.0.0"
+  title: "Medicyne"
+host: "medicyne.zizix6host.com"
+basePath: "/public/api/v1"
+tags:
+- name: "auth"
+  description: "Everything Authentication"
+schemes:
+- "https"
+- "http"
+paths:
+  /auth/login:
+    post:
+      tags:
+      - "auth"
+      summary: "Logs a user in"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "formData"
+        description: "Email of the user"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "formData"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Login successfull"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/LoggedInUserProfile"
+        "401":
+          description: "Wrong email or Password"
+          
+  /auth/refresh_token:
+    post:
+      tags:
+      - "auth"
+      summary: "refreshes the user token"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successfull Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/LoggedInUserProfile"
+        "500":
+          description: "error occured while trying to perform this operation"
+    
+  /auth/register:
+    post:
+      tags:
+      - "auth"
+      summary: "Registers a user"
+      description: "Register a user after adding the user information"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "formData"
+        description: "Email of the user"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "formData"
+        required: true
+        type: "string"
+      - name: "firstname"
+        in: "formData"
+        required: true
+        type: "string"
+      - name: "lastname"
+        in: "formData"
+        required: true
+        type: "string"
+      - name: "middlename"
+        in: "formData"
+        required: false
+        type: "string"
+      - name: "organization"
+        in: "formData"
+        required: true
+        type: "string"
+      - name: "rank_id"
+        in: "formData"
+        required: false
+        type: "integer"
+      - name: "title_id"
+        in: "formData"
+        required: false
+        type: "integer"
+      - name: "country_id"
+        in: "formData"
+        required: false
+        type: "integer"
+      - name: "state_id"
+        in: "formData"
+        required: false
+        type: "integer"
+      - name: "city"
+        in: "formData"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UserProfile"
+        "500":
+          description: "error occured while trying to perform this operation"
+          
+  /auth/validate_email_token:
+    post:
+      tags:
+      - "auth"
+      summary: "Validates the token sent to the user's email"
+      description: "A token is sent to the user's email after successfull registeration, this token will be used to validate the user's email"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "token"
+        in: "formData"
+        description: "The token sent to the user's email"
+        required: true
+        type: "integer"
+      - name: "email"
+        in: "formData"
+        description: "Email of the user"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "formData"
+        required: true
+        type: "string"
+      - name: "role_id"
+        in: "formData"
+        type: "integer"
+        required: true
+      responses:
+        "200":
+          description: "Token verified successfully"
+        "402":
+          description: "User Email is already verified"
+        "422":
+          description: "Validation was unsuccessfull"
+        "500":
+          description: "error occured while trying to perform this operation"
+  
+  /auth/resend_email_token:
+    get:
+      tags:
+      - "auth"
+      summary: "Resend Email Token"
+      description: "Resends email token to user's email"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Token Resent Successfully"
+        "402":
+          description: "User Email is already verified/token already generated"
+        "500":
+          description: "error occured while trying to perform this operation"
+          
+  /auth/forgot_password:
+    post:
+      tags:
+      - "auth"
+      summary: "sends email and role_id and a reset code is sent to the email if valid"
+      description: "sends email and role_id in order to retrieve forgotten password"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "formData"
+        description: "Email of the user"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "password reset code successfully sent to email"
+        "401":
+          description: "Incorrect email"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /auth/verify_token:
+    post:
+      tags:
+      - "auth"
+      summary: "verifies whether the code sent is valid and returns a token that the developer will send along with the new password"
+      description: "The user enters the code sent to him/her into a form input field and sends to this endpoint, the endpoint verifies that the code is valid and if its valid, it returns a token, which the developer will send along with the new password that the user enters"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "code"
+        in: "formData"
+        description: "verification code"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Code verified successfully"
+        "422":
+          description: "Code could not be verified"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /auth/new_password:
+    post:
+      tags:
+      - "auth"
+      summary: "changes the old password with a new password"
+      description: "Accepts a new password with the reset token sent along with the new password"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "password"
+        in: "formData"
+        required: true
+        type: "string"
+        description: "New Password"
+      - name: "token"
+        in: "formData"
+        description: "reset token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Code verified successfully"
+        "422":
+          description: "wrong token"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /ranks:
+    get:
+      tags:
+      - "utilities"
+      summary: "List of all the ranks"
+      description: "returns the list of all the ranks"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Rank"
+        "500":
+          description: "An error occured while attempting to perform operation"
+      
+  /titles:
+    get:
+      tags:
+      - "utilities"
+      summary: "List of all the titles"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Title"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /specializations:
+    get:
+      tags:
+      - "utilities"
+      summary: "List of all the specializations"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Specialization"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /non_clinical_interests:
+    get:
+      tags:
+      - "utilities"
+      summary: "List of all the non-clinical interests"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/NonClinicalInterest"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /countries:
+    get:
+      tags:
+      - "utilities"
+      summary: "List of all the countries"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Country"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /states/{country_id}:
+    get:
+      tags:
+      - "utilities"
+      summary: "List of all the states in a particular country"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "country_id"
+        in: "path"
+        description: "country id"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/State"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /get_user_role:
+    get:
+      tags:
+      - "utilities"
+      summary: "retrieves user role"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful Operation"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /get_admin_role:
+    get:
+      tags:
+      - "utilities"
+      summary: "retrieves admin role"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful Operation"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /timezones:
+    get:
+      tags:
+      - "utilities"
+      summary: "List of all the Timezones"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Timezone"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /verification/channels:
+    get:
+      tags:
+      - "verification"
+      summary: "List of all the verification channels"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/VerificationChannel"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /verification/request_from_users:
+    post:
+      tags:
+      - "verification"
+      summary: "Sends a request to a verified user to verify him"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "verifier_email"
+        in: "formData"
+        description: "the email of the user that the request will be sent to"
+        required: true
+        type: "integer"
+      - name: "channel_id"
+        in: "formData"
+        description: "The id of the channel"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/VerificationRequest"
+        "402":
+          description: "User already verified"
+        "422":
+          description: "verifier user validation error"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /verification/submit_medical_number:
+    post:
+      tags:
+      - "verification"
+      summary: "Submits the medical registration number of the doctor for verification"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "medical_number"
+        in: "formData"
+        description: "The medical registration number of the user"
+        required: true
+        type: "integer"
+      - name: "channel_id"
+        in: "formData"
+        description: "The id of the channel"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/VerificationRequest"
+        "402":
+          description: "User already verified"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /verification/submit_credentials:
+    post:
+      tags:
+      - "verification"
+      summary: "Submits certificates to be used for verification"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "files_id"
+        in: "formData"
+        description: "Array of the id of the certificates/documents uploaded"
+        required: true
+        type: "array"
+        items: 
+          type: "integer"
+      - name: "channel_id"
+        in: "formData"
+        description: "The id of the channel"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "credentials uploaded successfully"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/VerificationRequest"
+        "402":
+          description: "User already verified"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /verification/submit_institutional_email:
+    post:
+      tags:
+      - "verification"
+      summary: "Submits Institutional email address to be used to verify user"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "formData"
+        description: "User's Institutional email"
+        required: true
+        type: "string"
+      - name: "channel_id"
+        in: "formData"
+        description: "The id of the channel"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/VerificationRequest"
+        "402":
+          description: "User already verified"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /user_interest/add:
+    post:
+      tags:
+      - "User Interests"
+      summary: "Adds User Interests"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "specializations"
+        in: "formData"
+        description: "Top level Specializations ids, NOTE: If sub-specializations and non-clinical interests fields is not sent ot empty, then specializations field will be required"
+        type: "array"
+        items: 
+          type: "integer"
+      - name: "sub_specializations"
+        in: "formData"
+        description: "Sub Specializations ids, NOTE: If specializations and non-clinical interests fields is not sent ot empty, then sub-specializations field will be required"
+        type: "array"
+        items: 
+          type: "integer"
+      - name: "non_clinicals"
+        in: "formData"
+        description: "Non-clinical Interests ids, NOTE: If specializations and sub-specializations fields is not sent ot empty, then sub-specializations field will be required"
+        type: "array"
+        items: 
+          type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "User Interests added successfully"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /file/upload_credentials:
+    post:
+      tags:
+      - "file"
+      summary: "Uploads user credentials and returns an array of file_ids"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "files"
+        in: "formData"
+        description: "the user credential files as an array"
+        required: true
+        type: "array"
+        items: 
+          type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /file/upload_featured_image:
+    post:
+      tags:
+      - "file"
+      summary: "Uploads post featured image and returns a file_id"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "image"
+        in: "formData"
+        description: "the post featured image"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /file/upload_profile_photo:
+    post:
+      tags:
+      - "file"
+      summary: "Uploads user profile photo and returns a file_id"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "image"
+        in: "formData"
+        description: "user profile photo"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /file/upload_consultation_files:
+    post:
+      tags:
+      - "file"
+      summary: "Uploads files needed for consultation and returns an array of file_ids"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "files"
+        in: "formData"
+        description: "consultation files as an array"
+        required: true
+        type: "array"
+        items: 
+          type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /post/save:
+    post:
+      tags:
+      - "post"
+      summary: "Saves user post"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "title"
+        in: "formData"
+        description: "post title"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "formData"
+        description: "The post content"
+        required: true
+        type: "string"
+      - name: "file_id"
+        in: "formData"
+        description: "The Id of the featured image that was uploaded"
+        required: true
+        type: "integer"
+      - name: "interest_id"
+        in: "formData"
+        description: "The Id of the Interest that the post is related to"
+        required: true
+        type: "integer"
+      - name: "tags"
+        in: "formData"
+        description: "The tags associated to the post"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "402":
+          description: "Error occured, active status could not be found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /post/update:
+    post:
+      tags:
+      - "post"
+      summary: "Updates user post"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "post_id"
+        in: "formData"
+        description: "post ID"
+        required: true
+        type: "string"
+      - name: "title"
+        in: "formData"
+        description: "post title"
+        type: "string"
+      - name: "body"
+        in: "formData"
+        description: "The post content"
+        type: "string"
+      - name: "interest_id"
+        in: "formData"
+        description: "The Id of the Interest that the post is related to"
+        type: "integer"
+      - name: "tags"
+        in: "formData"
+        description: "The tags associated to the post"
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "402":
+          description: "Error occured, active status could not be found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /post/delete:
+    post:
+      tags:
+      - "post"
+      description: "Deletes user post"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "post_id"
+        in: "formData"
+        description: "post ID"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "402":
+          description: "Error occured, active status could not be found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /post/view_posts:
+    get:
+      tags:
+      - "post"
+      summary: "View all posts by the logged in user"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Post"
+        "402":
+          description: "User does not exist"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /post/user_posts/{user_id}:
+    get:
+      tags:
+      - "post"
+      summary: "View all posts by the logged in user"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "ID of user whose post is to be returned"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Post"
+        "402":
+          description: "User does not exist"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /user/save_notification_token:
+    post:
+      tags:
+      - "user"
+      summary: "saves user's notification token"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "token"
+        in: "formData"
+        description: "The token to be saved"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "Token saved successfully"
+        "402":
+          description: "Token field was not found or is empty"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /post/statuses:
+    get:
+      tags:
+      - "post"
+      summary: "get all the post statuses"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /post/change_status:
+    post:
+      tags:
+      - "post"
+      summary: "Changed post status"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "post_id"
+        in: "formData"
+        description: "The Id of the post"
+        required: true
+        type: "integer"
+      - name: "status_id"
+        in: "formData"
+        description: "The Id of the status that the post is being changed to"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "401":
+          description: "Invalid status Id/Post not found"
+        "402":
+          description: "Not Eligible to change the status of this post"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /post/like:
+    post:
+      tags:
+      - "post"
+      summary: "Like a post"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "post_id"
+        in: "formData"
+        description: "The Id of the post"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "401":
+          description: "Post not found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /post/dislike:
+    post:
+      tags:
+      - "post"
+      summary: "Dislike a post"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "post_id"
+        in: "formData"
+        description: "The Id of the post"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "401":
+          description: "Post not found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /post/increase_view_count:
+    post:
+      tags:
+      - "post"
+      summary: "Increase the number of views for a post"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "post_id"
+        in: "formData"
+        description: "The Id of the post"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "401":
+          description: "Post not found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /comment/save:
+    post:
+      tags:
+      - "comment"
+      summary: "Saves user comment"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "formData"
+        description: "The comment content"
+        required: true
+        type: "string"
+      - name: "post_id"
+        in: "formData"
+        description: "The Id of the post that is being commented upon"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "402":
+          description: "Error occured, active status could not be found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /comment/update:
+    post:
+      tags:
+      - "comment"
+      summary: "Updates user comment"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "comment_id"
+        in: "formData"
+        description: "The comment Id"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "formData"
+        description: "The comment content"
+        type: "string"
+      - name: "post_id"
+        in: "formData"
+        description: "The Id of the post that is being commented upon"
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "402":
+          description: "Error occured, active status could not be found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /comment/delete:
+    post:
+      tags:
+      - "comment"
+      summary: "Deletes user comment"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "comment_id"
+        in: "formData"
+        description: "The comment Id"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "402":
+          description: "Error occured, active status could not be found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /comment/change_status:
+    post:
+      tags:
+      - "comment"
+      summary: "Changed comment status"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "comment_id"
+        in: "formData"
+        description: "The Id of the comment"
+        required: true
+        type: "integer"
+      - name: "status_id"
+        in: "formData"
+        description: "The Id of the status that the post is being changed to"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "401":
+          description: "Invalid status Id/Comment not found"
+        "402":
+          description: "Not Eligible to change the status of this comment"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /comment/like:
+    post:
+      tags:
+      - "comment"
+      summary: "Like a comment"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "comment_id"
+        in: "formData"
+        description: "The Id of the comment"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "401":
+          description: "Comment not found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /comment/dislike:
+    post:
+      tags:
+      - "comment"
+      summary: "Dislike a comment"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "comment_id"
+        in: "formData"
+        description: "The Id of the comment"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "401":
+          description: "Comment not found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /reaction/remove/{id}:
+    get:
+      tags:
+      - "reaction"
+      summary: "Remove a reaction i.e like, dislike"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The Id of the reaction"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "404":
+          description: "Not found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /user/update_user:
+    post:
+      tags:
+      - "user"
+      summary: "Update Logged in user profile"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "422":
+          description: "Post Fields cannot be empty"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /user/save_profile_photo:
+    post:
+      tags:
+      - "user"
+      summary: "Save user profile photo file Id"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "file_id"
+        in: "formData"
+        description: "The Id of the file"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /user/search:
+    post:
+      tags:
+      - "user"
+      summary: "search for user"
+      description: "Search for a user using the name and has to be a minimum of 3 letters "
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "search_string"
+        in: "formData"
+        description: "The search string of the user's name to find"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "integer"
+        "402":
+          description: "Search string has to be equal to or greater than 3"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /user/follow:
+    post:
+      tags:
+      - "user"
+      summary: "follow a user"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "formData"
+        description: "The Id of the User to be followed"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/UserFollowed"
+        "401":
+          description: "User not found"
+        "402":
+          description: "User Already following the given user/This user cannot be followed/You cannot follow yourself"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /user/get_user_by_email/{email}:
+    get:
+      tags:
+      - "user"
+      summary: "get user details"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "path"
+        description: "Email of the user"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UserFollower"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /user/get_user_by_id/{id}/{role_id}:
+    get:
+      tags:
+      - "user"
+      summary: "get user details"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id of the user"
+        required: true
+        type: "string"
+      - name: "role_id"
+        in: "path"
+        description: "Role of the user"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UserFollower"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /user/followers:
+    get:
+      tags:
+      - "user"
+      summary: "get all the logged in user followers"
+      description: ""
+      produces:
+      - "application/json"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UserFollower"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /user/followers/{user_id}:
+    get:
+      tags:
+      - "user"
+      summary: "get all the user followers of the given user_id"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "The Id of the given User"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UserFollower"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /user/following:
+    get:
+      tags:
+      - "user"
+      summary: "get all the users the logged in user is following"
+      description: ""
+      produces:
+      - "application/json"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UserFollowed"
+        "401":
+          description: "User not found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /user/following/{user_id}:
+    get:
+      tags:
+      - "user"
+      summary: "get all the users the given user_id is following"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "The Id of the given User"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UserFollowed"
+        "401":
+          description: "User not found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /user/is_following/{user_id}:
+    get:
+      tags:
+      - "user"
+      summary: "returns true or false depending on whether the given user_id is being followed by the logged_in user"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "The Id of the given User"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UserFollowed"
+        "401":
+          description: "User not found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /user/is_followed/{user_id}:
+    get:
+      tags:
+      - "user"
+      summary: "returns true or false depending on whether the given user_id is following the logged_in user"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "The Id of the given User"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/UserFollowed"
+        "401":
+          description: "User not found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /user/feed/{pageNumber}:
+    get:
+      tags:
+      - "user"
+      summary: "gets the post feed of the logged_in user"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "pageNumber"
+        in: "path"
+        description: "The page number for pagination"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Post"
+        "500":
+          description: "An error occured while attempting to perform operation"
+  
+  /user/consultation:
+    get:
+      tags:
+      - "user"
+      summary: "gets All the consultants scheduled consultations"
+      description: ""
+      produces:
+      - "application/json"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ConsultationSchedule"
+              
+  /user/booked_consultation:
+    get:
+      tags:
+      - "user"
+      summary: "gets All the user's booked/scheduled consultations"
+      description: ""
+      produces:
+      - "application/json"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ConsultationSchedule"
+          
+  /consultation/slot/save:
+    post:
+      tags:
+      - "consultation"
+      summary: "Create a Consultation slot"
+      description: "A consultant will create a consultation slot which doctors will use to schedule a consultation"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "reoccur"
+        in: "formData"
+        description: "indicating whether the slot will reoccur"
+        required: true
+        type: "boolean"
+      - name: "start"
+        in: "formData"
+        description: "Start datetime for the slot"
+        required: true
+        type: "string"
+        format: "YYYY-MM-DD"
+      - name: "timezone"
+        in: "formData"
+        description: "Timezone of the consultant"
+        required: true
+        type: "string"
+      - name: "occurance"
+        in: "formData"
+        description: "How often the slot will occur, acceptable values are 'DAILY', 'WEEKLY', 'MONTHLY' and 'YEARLY'"
+        required: false
+        type: "string"
+      - name: "interval"
+        in: "formData"
+        description: "The interval before the next occurance"
+        required: false
+        type: "integer"
+      - name: "count"
+        in: "formData"
+        description: "How many times will it repeat. this is used to know when to stop. If its not set, use the until_date input to set the stop time, else it will be indefinite"
+        required: false
+        type: "string"
+      - name: "until_date"
+        in: "formData"
+        description: "The Date when it will stop. If it is not set, then use the count input to determine when it will stop"
+        required: false
+        type: "string"
+        format: "YYYY-MM-DD"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ConsultationSchedule"
+        "402":
+          description: "Some slots overlap"
+        "422":
+          description: "Validation error"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /consultation/slot/update:
+    post:
+      tags:
+      - "consultation"
+      summary: "Update a Consultation slot"
+      description: "Update a consultation slot which doctors will use to schedule a consultation"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "slot_id"
+        in: "formData"
+        description: "The slot ID being edited"
+        required: true
+        type: "integer"
+      - name: "reoccur"
+        in: "formData"
+        description: "indicating whether the slot will reoccur"
+        required: true
+        type: "boolean"
+      - name: "start"
+        in: "formData"
+        description: "Start datetime for the slot"
+        required: true
+        type: "string"
+        format: "YYYY-MM-DD"
+      - name: "timezone"
+        in: "formData"
+        description: "Timezone of the consultant"
+        required: true
+        type: "string"
+      - name: "occurance"
+        in: "formData"
+        description: "How often the slot will occur, acceptable values are 'DAILY', 'WEEKLY', 'MONTHLY' and 'YEARLY'"
+        required: false
+        type: "string"
+      - name: "interval"
+        in: "formData"
+        description: "The interval before the next occurance"
+        required: false
+        type: "integer"
+      - name: "count"
+        in: "formData"
+        description: "How many times will it repeat. this is used to know when to stop. If its not set, use the until_date input to set the stop time, else it will be indefinite"
+        required: false
+        type: "string"
+      - name: "until_date"
+        in: "formData"
+        description: "The Date when it will stop. If it is not set, then use the count input to determine when it will stop"
+        required: false
+        type: "string"
+        format: "YYYY-MM-DD"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ConsultationSchedule"
+        "402":
+          description: "Some slots overlap"
+        "422":
+          description: "Validation error"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /consultation/slot/delete:
+    post:
+      tags:
+      - "consultation"
+      summary: "Delete a Consultation slot"
+      description: "Delete a consultation slot"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "slot_id"
+        in: "formData"
+        description: "The slot ID being edited"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ConsultationSchedule"
+        "402":
+          description: "Some slots overlap"
+        "422":
+          description: "Validation error"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /consultation/schedule:
+    post:
+      tags:
+      - "consultation"
+      summary: "Schedule a Consultation with a consultant based on a consultation slot"
+      description: "A doctor will be able to request for consultation based on a consultation slot"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "consultation_slot_id"
+        in: "formData"
+        description: "The consultation slot Id"
+        required: true
+        type: "integer"
+      - name: "situation"
+        in: "formData"
+        description: "Situation of the problem"
+        required: true
+        type: "string"
+      - name: "brief"
+        in: "formData"
+        description: "A brief description of the problem"
+        required: true
+        type: "string"
+      - name: "background"
+        in: "formData"
+        description: "A background overview of the problem"
+        required: true
+        type: "string"
+      - name: "recommendations"
+        in: "formData"
+        required: true
+        type: "string"
+      - name: "date"
+        in: "formData"
+        required: true
+        type: "string"
+        format: "2021-10-11"
+      - name: "files_id"
+        in: "formData"
+        required: true
+        type: "array"
+        items:
+          type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ConsultationSchedule"
+        "402":
+          description: "Cannot book consultation on a past time/You cannot book consultation with yourself!/The selected date week day and the slot weekday does not match"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /consultation/save_timezone:
+    post:
+      tags:
+      - "consultation"
+      summary: "Save a user's consultation timeZone"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "timezone_id"
+        in: "formData"
+        description: "Timezone Id"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ConsultationSchedule"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /consultation/get_free_monthly_slots/{month}/{year}:
+    get:
+      tags:
+      - "consultation"
+      summary: "gets all the free consulting slots for the given month and year for the loggd in user"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "month"
+        in: "path"
+        description: "The month e.g '09' for september"
+        required: true
+        type: "string"
+      - name: "year"
+        in: "path"
+        description: "The 4digits year e.g '2021' "
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ConsultationSlot"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /consultation/get_free_monthly_slots/{month}/{year}/{user_id}:
+    get:
+      tags:
+      - "consultation"
+      summary: "gets all the free consulting slots for the given month and year for the given user_id"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "month"
+        in: "path"
+        description: "The month e.g '09' for september"
+        required: true
+        type: "string"
+      - name: "year"
+        in: "path"
+        description: "The 4digits year e.g '2021' "
+        required: true
+        type: "string"
+      - name: "user_id"
+        in: "path"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ConsultationSlot"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /consultation/get_free_day_slots/{date}:
+    get:
+      tags:
+      - "consultation"
+      summary: "gets All the consultation slots for the given date for the logged in user"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "date"
+        in: "path"
+        description: "The date that you want to get the slots"
+        required: true
+        type: "string"
+        format: "YYYY-MM-DD"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ConsultationSlot"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /consultation/get_free_day_slots/{date}/{user_id}:
+    get:
+      tags:
+      - "consultation"
+      summary: "gets All the consultation slots for the given date for the given user_id"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "date"
+        in: "path"
+        description: "The date that you want to get the slots"
+        required: true
+        type: "string"
+        format: "YYYY-MM-DD"
+      - name: "user_id"
+        in: "path"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ConsultationSlot"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /consultation/get_consultation_requests:
+    post:
+      tags:
+      - "consultation"
+      summary: "Gets all The consultation requests that has been made to the logged in consultant"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "Successfull"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ConsultationSchedule"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /consultation/get_user_consultation_requests:
+    post:
+      tags:
+      - "consultation"
+      summary: "Gets all The consultation requests that has not been confirmed made by the logged in user"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "Successfull"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ConsultationSchedule"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /consultation/confirm_or_decline:
+    post:
+      tags:
+      - "consultation"
+      summary: "Confirm or decline a consultation request"
+      description: "Confirms or declines a consultation"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "schedule_id"
+        in: "formData"
+        description: "The The Consultation Schedule Id"
+        required: true
+        type: "integer"
+      - name: "confirm"
+        in: "formData"
+        description: "detemines whether the schedule is confirmed or declined; 1=confirm and 0=decline"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "Schedule Confirmed/Declined Successfully"
+        "402":
+          description: "You do not have the right to perform this operation"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /consultation/cancel:
+    post:
+      tags:
+      - "consultation"
+      summary: "Cancelling a consultation"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "schedule_id"
+        in: "formData"
+        description: "The The Consultation Schedule Id"
+        required: true
+        type: "integer"
+      - name: "cancel"
+        in: "formData"
+        description: "1=cancelled"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "Schedule Confirmed/Declined Successfully"
+        "402":
+          description: "You do not have the right to perform this operation"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /consultation/chats/{schedule_id}:
+    get:
+      tags:
+      - "consultation"
+      summary: "gets All the consultation slots for the given date for the given user_id"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "schedule_id"
+        in: "path"
+        description: "Consultation schedule Id"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ConsultationChat"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /consultation/get_available_doctors/{date}:
+    get:
+      tags:
+      - "consultation"
+      summary: "gets All the available doctors(consultants) for a given date"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "date"
+        in: "path"
+        description: "The date that you want to check doctors availability"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ConsultationChat"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /consultation/filter_available_doctors:
+    post:
+      tags:
+      - "consultation"
+      summary: "Filters available doctors for a particular date according to sub_specialization"
+      description: "Confirms or declines a consultation"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "date"
+        in: "formData"
+        description: "The date that you want to check doctors availability"
+        required: true
+        type: "integer"
+      - name: "sub_specialization_id"
+        in: "formData"
+        description: "The sub_specialization Id that you want to filter available doctors by"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "Successfull"
+        "401":
+          description: "No Doctors found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /consultation/chats/send_message:
+    post:
+      tags:
+      - "consultation"
+      summary: "send chat message"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "receiver_id"
+        in: "formData"
+        description: "The user Id of the receiver"
+        required: true
+        type: "integer"
+      - name: "schedule_id"
+        in: "formData"
+        description: "Consultation schedule Id"
+        required: true
+        type: "integer"
+      - name: "message"
+        in: "formData"
+        description: "The chat message"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "Message sent Successfully"
+        "402":
+          description: "Consultation Schedule does not exist/Receiver does not have fcm token. generate and save fcm token for the user before you can proceed/Receiver does not exist"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /consultation/chats/send_file:
+    post:
+      tags:
+      - "consultation"
+      summary: "send file in chat"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "receiver_id"
+        in: "formData"
+        description: "The user Id of the receiver"
+        required: true
+        type: "integer"
+      - name: "schedule_id"
+        in: "formData"
+        description: "Consultation schedule Id"
+        required: true
+        type: "integer"
+      - name: "file"
+        in: "formData"
+        description: "The file"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "File sent Successfully"
+        "402":
+          description: "Consultation Schedule does not exist/Receiver does not have fcm token. generate and save fcm token for the user before you can proceed/Receiver does not exist"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /notification/save_notification_preferences:
+    post:
+      tags:
+      - "notification"
+      summary: "save user's notification preference"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "notification_type_ids"
+        in: "formData"
+        description: "The notification type allowed by the user"
+        required: true
+        type: "array"
+        items:
+          type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "Operation Successful"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /notification/user_allowed_notifications:
+    get:
+      tags:
+      - "notification"
+      summary: "gets All the allowed notifications for the logged in User"
+      description: ""
+      produces:
+      - "application/json"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/AllowedNotification"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /notification/user_allowed_notifications/{user_id}:
+    get:
+      tags:
+      - "notification"
+      summary: "gets All the allowed notifications for the given user_id"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "User Id"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/AllowedNotification"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /notification/notification_types:
+    get:
+      tags:
+      - "notification"
+      summary: "gets All the notification types"
+      description: ""
+      produces:
+      - "application/json"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/NotificationType"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /message/send:
+    post:
+      tags:
+      - "message"
+      summary: "send message to another user"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "formData"
+        description: "The id of the user the message is being sent to"
+        required: true
+        type: "integer"
+      - name: "message"
+        in: "formData"
+        description: "Message being sent"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "Operation Successful"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /message/chat/{user_id}:
+    get:
+      tags:
+      - "message"
+      summary: "Gets all the messages sent between the logged in User and the given user_id"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "User Id"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Message"
+        "500":
+          description: "An error occured while attempting to perform operation"
+          
+  /message/mark_as_read/{user_id}:
+    get:
+      tags:
+      - "message"
+      summary: "gets All the notification types"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "User Id"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Message"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /message/inbox:
+    get:
+      tags:
+      - "message"
+      summary: "gets All the users that the logged in use has exchanged direct message with"
+      description: ""
+      produces:
+      - "application/json"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /admin/verification/verify_user:
+    post:
+      tags:
+      - "admin"
+      summary: "Verifies user"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "formData"
+        description: "The id of the user"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "user verified successfully"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/VerificationRequest"
+        "401":
+          description: "User not found"
+        "500":
+          description: "An error occured while attempting to perform operation"
+  
+securityDefinitions:
+  petstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:pets: "modify pets in your account"
+      read:pets: "read your pets"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+  jwt_token:
+    type: "apiKey"
+    name: "Bearer Token"
+    in: "header"
+definitions:
+  UserLogin:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+        format: "email"
+        example: "abc@gmail.com"
+      password:
+        type: "string"
+      role_id:
+        type: "integer"
+        format: "int32"
+        
+  Role:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      role:
+        type: "string"
+        
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      email:
+        type: "string"
+        format: "email"
+        example: "abc@gmail.com"
+      role:
+        $ref: "#/definitions/Role"
+        
+  LoggedInUserProfile:
+    type: "object"
+    properties:
+      id: 
+        type: "integer"
+        format: "int32"
+      token:
+        type: "string"
+      user:
+        $ref: "#/definitions/User"
+      email:
+        type: "string"
+        format: "email"
+        example: "abc@gmail.com"
+      firstname:
+        type: "string"
+      lastname:
+        type: "string"
+      middlename:
+        type: "string"
+      organization:
+        type: "string"
+        
+      qualification:
+        $ref: "#/definitions/Qualification"
+      title:
+        $ref: "#/definitions/Title"
+      country:
+        $ref: "#/definitions/Country"
+      state:
+        $ref: "#/definitions/State"
+      city:
+        type: "string"
+  
+  UserProfile:
+    type: "object"
+    properties:
+      id: 
+        type: "integer"
+        format: "int32"
+      user:
+        $ref: "#/definitions/User"
+      email:
+        type: "string"
+        format: "email"
+        example: "abc@gmail.com"
+      firstname:
+        type: "string"
+      lastname:
+        type: "string"
+      middlename:
+        type: "string"
+      organization:
+        type: "string"
+        
+      qualification:
+        $ref: "#/definitions/Qualification"
+      title:
+        $ref: "#/definitions/Title"
+      country:
+        $ref: "#/definitions/Country"
+      state:
+        $ref: "#/definitions/State"
+      city:
+        type: "string"
+        
+  Qualification:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      name:
+        type: "string"
+        
+  Title:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      title:
+        type: "string"
+  
+  Country:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      name:
+        type: "string"
+      sortname:
+        type: "string"
+      phoneCode:
+        type: "integer"
+        
+  State:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      country:
+        $ref: "#/definitions/Country"
+      name:
+        type: "string"
+        
+  Rank:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      name:
+        type: "string"
+        
+  Specialization:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      name:
+        type: "string"
+      subSpecializations:
+        $ref: "#/definitions/SubSpecialization"
+        
+  SubSpecialization:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      name:
+        type: "string"
+      specialization:
+        $ref: "#/definitions/Specialization"
+        
+  NonClinicalInterest:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      name:
+        type: "string"
+        
+  VerificationChannel:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      name:
+        type: "string"
+        
+  VerificationRequest:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      user:
+        $ref: "#/definitions/User"
+      channel:
+        $ref: "#/definitions/VerificationChannel"
+      status:
+        type: "integer"
+        format: "int32"
+      verifier:
+        $ref: "#/definitions/User"
+      remarks:
+        type: "string"
+      date_initialized:
+        type: "string"
+        format: "date"
+      institutional_email:
+        type: "string"
+      medical_number:
+        type: "string"
+
+  Post:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      user:
+        $ref: "#/definitions/User"
+      title:
+        type: "string"
+      body:
+        type: "string"
+      featured_image:
+        type: "string"
+        description: "The image url"
+      tags:
+        type: "string"
+      status:
+        type: "string"
+      views_count:
+        type: "integer"
+      likes:
+        $ref: "#/definitions/User"
+      dislikes:
+        $ref: "#/definitions/User"
+        
+  UserFollowed:
+    type: "object"
+    properties:
+      user_id: 
+        type: "integer"
+        format: "int32"
+      email:
+        type: "string"
+        format: "email"
+        example: "abc@gmail.com"
+      firstname:
+        type: "string"
+      lastname:
+        type: "string"
+      middlename:
+        type: "string"
+      followed_at:
+        type: "string"
+        format: "date"
+        
+  UserFollower:
+    type: "object"
+    properties:
+      user_id: 
+        type: "integer"
+        format: "int32"
+      email:
+        type: "string"
+        format: "email"
+        example: "abc@gmail.com"
+      firstname:
+        type: "string"
+      lastname:
+        type: "string"
+      middlename:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date"
+        
+  ConsultationSlot:
+    type: "object"
+    properties:
+      id: 
+        type: "integer"
+        format: "int32"
+      user_id: 
+        type: "integer"
+        format: "int32"
+      start_time:
+        type: "string"
+        format: "time"
+        example: "08:00"
+      end_time:
+        type: "string"
+        format: "time"
+        example: "08:15"
+      week_day:
+        type: "integer"
+        
+  ConsultationSchedule:
+    type: "object"
+    properties:
+      id: 
+        type: "integer"
+        format: "int32"
+      user: 
+        $ref: "#/definitions/User"
+      consultationSlot:
+        $ref: "#/definitions/ConsultationSlot"
+      situation:
+        type: "string"
+      brief:
+        type: "string"
+      background:
+        type: "string"
+      recommendations:
+        type: "string"
+      week_day:
+        type: "integer"
+      files:
+        $ref: "#/definitions/File"
+        
+  File:
+    type: "object"
+    properties:
+      id: 
+        type: "integer"
+        format: "int32"
+      user_id: 
+        type: "integer"
+        format: "int32"
+      file_type: 
+        type: "string"
+      mime_type: 
+        type: "string"
+      original_file_name: 
+        type: "string"
+      extension: 
+        type: "string"
+      size: 
+        type: "integer"
+      url: 
+        type: "string"
+        
+  Timezone:
+    type: "object"
+    properties:
+      id: 
+        type: "integer"
+        format: "int32"
+      name: 
+        type: "string"
+      offset: 
+        type: "string"
+        format: "+01:00"
+      diff_from_gtm: 
+        type: "string"
+        format: "UTC/GMT +01:00"
+
+  ConsultationChat:
+    type: "object"
+    properties:
+      id: 
+        type: "integer"
+        format: "int32"
+      sender: 
+        $ref: "#/definitions/User"
+      receiver: 
+        $ref: "#/definitions/User"
+      consultationSchedule:
+        $ref: "#/definitions/ConsultationSchedule"
+      message:
+        type: "string"
+      sent_at:
+        type: "string"
+        format: "date"
+        
+  NotificationType:
+    type: "object"
+    properties:
+      id: 
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      allowed:
+        type: "boolean"
+        format: "date"
+        
+  AllowedNotification:
+    type: "object"
+    properties:
+      notificationType: 
+        $ref: "#/definitions/NotificationType"
+        
+  Message:
+    type: "object"
+    properties:
+      id: 
+        type: "integer"
+        format: "int32"
+      sender: 
+        $ref: "#/definitions/User"
+      receiver: 
+        $ref: "#/definitions/User"
+      message:
+        type: "string"
+      sent_at:
+        type: "string"
+        format: "date"
+
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
