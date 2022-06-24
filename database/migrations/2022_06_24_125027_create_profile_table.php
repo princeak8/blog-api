@@ -16,8 +16,8 @@ class CreateProfileTable extends Migration
         Schema::create('profile', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->foreignId('name');
-            $table->foreignId('about');
+            $table->string('name');
+            $table->text('about');
             $table->timestamps();
         });
     }
