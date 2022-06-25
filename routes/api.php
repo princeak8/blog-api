@@ -43,7 +43,7 @@ Route::group([
     //Auth Routes
     // Route::post('/login', 'AuthController@login');
 
-    //Post Routes
+    //Profile Routes
     Route::group([
         'prefix' => 'profile'
     ], function () {
@@ -57,12 +57,25 @@ Route::group([
         'prefix' => 'post'
     ], function () {
         Route::get('/public', 'PostController@public_posts');
+        Route::get('/published', 'PostController@published_posts');
         Route::get('/unpublished', 'PostController@unpublished_posts');
         Route::get('/hidden', 'PostController@hidden_posts');
         Route::post('/save', 'PostController@save');
-        Route::post('/update_post', 'PostController@update');
+        Route::post('/update', 'PostController@update');
+        Route::delete('/delete/{post_id}', 'PostController@delete');
+        Route::get('/toggle_publish/{post_id}', 'PostController@toggle_publish');
+        Route::get('/toggle_publish/{post_id}', 'PostController@toggle_visibility');
         Route::get('/{post_id}', 'PostController@post');
         
+    }); 
+
+    //Tag Routes
+    Route::group([
+        'prefix' => 'tag'
+    ], function () {
+        Route::get('/all', 'TagController@tags');
+        Route::post('/save', 'TagController@save');
+        Route::post('/update', 'TagController@update');
     }); 
 
     //File Routes
@@ -70,5 +83,24 @@ Route::group([
         'prefix' => 'file'
     ], function () {
         Route::post('/save', 'FileController@save');
+    });
+});
+
+
+
+//Public Routes
+Route::group([
+    'prefix' => 'v1/{db}/',
+    'middleware' => 'setDB'
+
+], function () {
+        
+    //Post Routes
+    Route::group([
+        'prefix' => 'post'
+    ], function () {
+        Route::get('/all', 'PostController@posts');
+        Route::get('/show/{post_id}', 'PostController@post');
+        Route::get('/increase_views/{post_id}', 'PostController@increase_view_count');
     });
 });

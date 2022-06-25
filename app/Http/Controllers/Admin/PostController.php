@@ -39,12 +39,20 @@ class PostController extends Controller
         $input = $request->all();
         $input['user_id'] = auth::user()->id;
         try{
-            $post = $this->postService->save($input);
-            return response()->json([
-                'statusCode' => 200,
-                'message' => 'Saved Successfully',
-                // 'data' => new PostResource($post)
-            ], 200);
+            $previewArr = explode(' ', $input['preview']);
+            if(count($previewArr) <= 25) { 
+                $post = $this->postService->save($input);
+                return response()->json([
+                    'statusCode' => 200,
+                    'message' => 'Saved Successfully',
+                    // 'data' => new PostResource($post)
+                ], 200);
+            }else{
+                return response()->json([
+                    'statusCode' => 402,
+                    'message' => 'Preview word count should not be more than 25words',
+                ], 402);
+            }
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
             return response()->json([
@@ -56,15 +64,134 @@ class PostController extends Controller
 
     public function update(UpdatePostRequest $request)
     {
-        $input = $request->all();
-        $input['user_id'] = 1;
         try{
-            $post = $this->postService->update($input);
+            $input = $request->all();
+            $input['user_id'] = 1;
+            $post = $this->postService->getPost($input['post_id']);
+            if($post) {
+                if(isset($input['preview'])) {
+                    $previewArr = explode(' ', $input['preview']);
+                    if(count($previewArr) > 25) { 
+                        return response()->json([
+                            'statusCode' => 402,
+                            'message' => 'Preview word count should not be more than 25words',
+                        ], 402);
+                    }
+                }
+                $post = $this->postService->update($post, $input);
+                return response()->json([
+                    'statusCode' => 200,
+                    'message' => 'Updated Successfully',
+                    'data' => new PostResource($post)
+                ], 200);
+            }else{
+                return response()->json([
+                    'statusCode' => 404,
+                    'message' => 'Post not found'
+                ], 404);
+            }
+        }catch(\Exception $e){
+            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
             return response()->json([
-                'statusCode' => 200,
-                'message' => 'Updated Successfully',
-                'data' => new PostResource($post)
-            ], 200);
+                'statusCode' => 500,
+                'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
+            ], 500);
+        }
+    }
+
+    public function delete($id)
+    {
+        try{
+            $post = $this->postService->getPost($id);
+            if($post) {
+                $this->postService->delete($post);
+                return response()->json([
+                    'statusCode' => 200,
+                    'message' => 'Deleted Successfully'
+                ], 200);
+            }else{
+                return response()->json([
+                    'statusCode' => 404,
+                    'message' => 'Post not found'
+                ], 404);
+            }
+        }catch(\Exception $e){
+            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
+            ], 500);
+        }
+    }
+
+    public function toggle_publish($id)
+	{
+        try{
+            $post = $this->postService->getPost($id);
+            if($post) {
+                $post = $this->postService->togglePublish($post);
+                return response()->json([
+                    'statusCode' => 200,
+                    'data' => new PostResource($post),
+                    'message' => 'Successful'
+                ], 200);
+            }else{
+                return response()->json([
+                    'statusCode' => 404,
+                    'message' => 'Post not found'
+                ], 404);
+            }
+        }catch(\Exception $e){
+            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
+            ], 500);
+        }
+	}
+
+	public function toggle_visibility($id)
+	{
+		try{
+            $post = $this->postService->getPost($id);
+            if($post) {
+                $post = $this->postService->toggleVisible($post);
+                return response()->json([
+                    'statusCode' => 200,
+                    'data' => new PostResource($post),
+                    'message' => 'Successful'
+                ], 200);
+            }else{
+                return response()->json([
+                    'statusCode' => 404,
+                    'message' => 'Post not found'
+                ], 404);
+            }
+        }catch(\Exception $e){
+            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
+            ], 500);
+        }
+    }
+    
+    public function post($id)
+    {
+        try{
+            $post = $this->postService->getPost($id);
+            if($post) {
+                return response()->json([
+                    'statusCode' => 200,
+                    'data' => new PostResource($post),
+                    'message' => 'Successful'
+                ], 200);
+            }else{
+                return response()->json([
+                    'statusCode' => 404,
+                    'message' => 'Post not found'
+                ], 404);
+            }
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
             return response()->json([
@@ -79,6 +206,24 @@ class PostController extends Controller
         $user_id = 1;
         try{
             $posts = $this->postService->getPublicPosts($user_id);
+            return response()->json([
+                'statusCode' => 200,
+                'data' => PostResource::collection($posts)
+            ], 200);
+        }catch(\Exception $e){
+            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
+            ], 500);
+        }
+    }
+
+    public function published_posts()
+    {
+        $user_id = 1;
+        try{
+            $posts = $this->postService->getpublishedPosts($user_id);
             return response()->json([
                 'statusCode' => 200,
                 'data' => PostResource::collection($posts)

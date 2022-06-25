@@ -49,9 +49,9 @@ class Post extends Model
 
             if($post->coverImage) $post->coverImage->delete();
             
-            foreach ($post->postInterests as $interest)
+            foreach ($post->comments as $comment)
             {
-                $interest->delete();
+                $comment->delete();
             }
         });
     }

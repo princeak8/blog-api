@@ -27,8 +27,8 @@ class SavePostRequest extends FormRequest
     {
         return [
             // 'title' => 'required|max:255|unique:posts,title,null,id,user_id,'.auth::user()->id,
-            'title' => 'required|max:255',
-            'preview' => 'required|string|min:1',
+            'title' => 'required|max:255|unique:posts',
+            'preview' => 'required|string|min:1|max:255',
             'content' => 'required|string|min:1',
             'category_id' => 'integer',
             'tags_id' => 'array',

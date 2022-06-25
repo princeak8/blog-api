@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Http\Requests\SavePostRequest;
-use App\Http\Requests\UpdatePostRequest;
-
-use App\Http\Resources\PostResource;
+use App\Http\Requests\SaveCommentRequest;
 
 use App\Services\PostService;
+use App\Services\CommentService;
 
-class PostController extends Controller
+use App\Http\Resources\CommentResource;
+
+class CommentController extends Controller
 {
-    
     private $postService;
     private $commentService;
 
@@ -23,18 +22,23 @@ class PostController extends Controller
      *
      * @return void
      */
+    
     public function __construct() {
+        $this->middleware('auth:api');
         $this->postService = new PostService;
-        // $this->commentService = $_commentService;
+        $this->commentService = new CommentService;
     }
 
-    public function posts()
+    public function save(SaveCommentRequest $request)
     {
+        $input = $request->all();
+        $input['user_id'] = auth::user()->id;
         try{
-            $posts = $this->postService->posts();
+            $post = $this->postService->save($input);
             return response()->json([
                 'statusCode' => 200,
-                'data' => PostResource::collection($posts)
+                'message' => 'Saved Successfully',
+                // 'data' => new PostResource($post)
             ], 200);
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
@@ -45,38 +49,20 @@ class PostController extends Controller
         }
     }
 
-    public function post($post_id)
+    public function delete($id)
     {
         try{
-            $post = $this->postService->getPost($post_id);
-            return response()->json([
-                'statusCode' => 200,
-                'data' => new PostResource($post)
-            ], 200);
-        }catch(\Exception $e){
-            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
-            return response()->json([
-                'statusCode' => 500,
-                'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
-            ], 500);
-        }
-    }
-
-    public function increase_view_count($post_id)
-    {
-        try{
-            $post = $this->postService->getPost($post_id);
+            $post = $this->postService->getPost($id);
             if($post) {
-                $post = $this->postService->increaseViewCount($post);
+                $this->postService->delete($post);
                 return response()->json([
                     'statusCode' => 200,
-                    'data' => new PostResource($post),
-                    'message' => "Successful"
+                    'message' => 'Deleted Successfully'
                 ], 200);
             }else{
                 return response()->json([
                     'statusCode' => 404,
-                    'message' => "Post not found"
+                    'message' => 'Post not found'
                 ], 404);
             }
         }catch(\Exception $e){

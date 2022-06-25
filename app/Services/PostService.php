@@ -129,16 +129,30 @@ class PostService
         return $post;
     }
 
+    public function delete($post)
+    {
+        $post->delete();
+    }
+
     public function togglePublish($post)
     {
         $post->publish ^= 1;
         $post->update();
+        return $post;
     }
 
     public function toggleVisible($post)
     {
         $post->visible ^= 1;
         $post->update();
+        return $post;
+    }
+
+    public function increaseViewCount($post)
+    {
+        $post->views += 1;
+        $post->update();
+        return $post;
     }
 
 }

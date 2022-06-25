@@ -21,7 +21,6 @@ class PostResource extends JsonResource
         return [
             'id' => $this->id,
             // 'user' => $this->user,
-            'avatar' => isset( $this->user->photo)?  $this->user->photo->url: null,
             'title' => $this->title,
             'content' => $this->content,
             'category' => new CategoryResource($this->category),

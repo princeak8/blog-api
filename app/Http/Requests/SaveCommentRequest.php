@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdatePostRequest extends FormRequest
+class SaveCommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class UpdatePostRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -26,14 +26,9 @@ class UpdatePostRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'title' => 'required|max:255|unique:posts,title,null,id,user_id,'.auth::user()->id,
+            'reader_id' => 'required|integer',
             'post_id' => 'required|integer',
-            'title' => 'string|max:255|unique:posts,title,' . $this->input('post_id'),
-            'content' => 'string|min:1',
-            'category_id' => 'integer',
-            'tags_id' => 'array',
-            'tags_id.*' => 'integer',
-            'cover_photo_id' => 'integer'
+            'content' => 'required|string|min:1',
         ];
     }
 

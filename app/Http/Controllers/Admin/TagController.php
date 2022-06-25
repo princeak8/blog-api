@@ -1,40 +1,39 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Validator;
 
-use App\Http\Requests\SavePostRequest;
-use App\Http\Requests\UpdatePostRequest;
+use App\Http\Resources\TagResource;
 
-use App\Http\Resources\PostResource;
+use App\Services\TagService;
 
-use App\Services\PostService;
-
-class PostController extends Controller
+class TagController extends Controller
 {
-    
-    private $postService;
-    private $commentService;
+
+    private $tagService;
 
     /**
-     * Create a new PostController instance.
+     * Create a new TagController instance.
      *
      * @return void
      */
+    
     public function __construct() {
-        $this->postService = new PostService;
-        // $this->commentService = $_commentService;
+        $this->middleware('auth:api');
+        $this->tagService = new TagService;
     }
 
-    public function posts()
+    public function tags()
     {
         try{
-            $posts = $this->postService->posts();
+            $tags = $this->tagService->getTags();
+            $tags = ($tags->count() > 0) ? TagResource::collection($tags) : [];
             return response()->json([
                 'statusCode' => 200,
-                'data' => PostResource::collection($posts)
+                'data' => $tags
             ], 200);
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
@@ -45,13 +44,21 @@ class PostController extends Controller
         }
     }
 
-    public function post($post_id)
+    public function save(Request $request)
     {
-        try{
-            $post = $this->postService->getPost($post_id);
+        try{ 
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|min:1|unique:tags'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+
+            $this->tagService->save($request->all());
             return response()->json([
                 'statusCode' => 200,
-                'data' => new PostResource($post)
+                'message' => 'Saved Successfully'
             ], 200);
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
@@ -62,21 +69,28 @@ class PostController extends Controller
         }
     }
 
-    public function increase_view_count($post_id)
+    public function update(Request $request)
     {
-        try{
-            $post = $this->postService->getPost($post_id);
-            if($post) {
-                $post = $this->postService->increaseViewCount($post);
+        try{ 
+            $validator = Validator::make($request->all(), [
+                'tag_id' => 'required|integer',
+                'name' => 'required|string|min:1|unique:tags'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+            $tag = $this->tagService->getTag($request->input('tag_id'));
+            if($tag) {
+                $this->tagService->update($tag, $request->all());
                 return response()->json([
                     'statusCode' => 200,
-                    'data' => new PostResource($post),
-                    'message' => "Successful"
+                    'message' => 'updated Successfully'
                 ], 200);
             }else{
                 return response()->json([
                     'statusCode' => 404,
-                    'message' => "Post not found"
+                    'message' => 'Tag does not exist'
                 ], 404);
             }
         }catch(\Exception $e){
