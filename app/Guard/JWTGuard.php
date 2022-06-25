@@ -42,7 +42,6 @@
                 $id = $this->jwt->payload()->get('sub');            
                 $this->user = new User();
                 $this->user->id = $id;
-                $this->user->name = $this->jwt->payload()->get('name');
                 $this->user->domain = $this->jwt->payload()->get('domain');
                 $this->user->email = $this->jwt->payload()->get('email');
                 // Set data from custom claims 

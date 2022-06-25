@@ -18,11 +18,16 @@ class CreateFilesTable extends Migration
             $table->foreignId('user_id');
             $table->string('file_type');
             $table->string('mime_type');
-            $table->string('original_file_name');
+            $table->string('filename');
+            $table->string('original_filename');
             $table->string('extension');
             $table->mediumInteger('size');
+            $table->string('formatted_size');
             $table->string('url');
-            $table->date('date');
+            $table->string('secure_url')->nullable();
+            $table->string('public_id')->nullable();
+            $table->mediumInteger('width')->nullable();
+            $table->mediumInteger('height')->nullable();
             $table->timestamps();
         });
     }

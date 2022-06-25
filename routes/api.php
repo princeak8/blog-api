@@ -45,6 +45,15 @@ Route::group([
 
     //Post Routes
     Route::group([
+        'prefix' => 'profile'
+    ], function () {
+        Route::get('/{user_id}', 'UserController@getProfile');
+        Route::post('/create', 'UserController@create_profile');
+    });
+        
+
+    //Post Routes
+    Route::group([
         'prefix' => 'post'
     ], function () {
         Route::get('/public', 'PostController@public_posts');
@@ -55,4 +64,11 @@ Route::group([
         Route::get('/{post_id}', 'PostController@post');
         
     }); 
+
+    //File Routes
+    Route::group([
+        'prefix' => 'file'
+    ], function () {
+        Route::post('/save', 'FileController@save');
+    });
 });
