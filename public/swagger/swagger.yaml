@@ -350,10 +350,10 @@ paths:
         "500":
           description: "An error occured while attempting to perform operation"
           
-  /post/{post_id}:
+  admin/post/{post_id}:
     get:
       tags:
-      - "post"
+      - "Admin/Post"
       summary: "View a post"
       description: ""
       produces:
@@ -374,6 +374,89 @@ paths:
               $ref: "#/definitions/Post"
         "404":
           description: "Post does not exist"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  admin/tag/all:
+    get:
+      tags:
+      - "Admin/Tag"
+      summary: "View all tags"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Tag"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /admin/tag/save:
+    post:
+      tags:
+      - "Admin/Tag"
+      summary: "Creates a new Tag"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "formData"
+        description: "The name of the tag"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Tag"
+        "422":
+          description: "Validation error"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  /admin/tag/update:
+    post:
+      tags:
+      - "Admin/Tag"
+      summary: "Updates a Tag"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "formData"
+        description: "The name of the tag"
+        required: true
+        type: "string"
+      - name: "tag_id"
+        in: "formData"
+        description: "The id of the tag"
+        required: true
+        type: "integer"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Tag"
+        "422":
+          description: "Validation error"
         "500":
           description: "An error occured while attempting to perform operation"
   
