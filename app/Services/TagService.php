@@ -33,12 +33,14 @@ class TagService
         $tag = new Tag;
         $tag->name = $data['name'];
         $tag->save();
+        return $tag;
     }
 
     public function update($tag, $data)
     {
         $tag->name = $data['name'];
         $tag->update();
+        return $tag;
     }
 
 }

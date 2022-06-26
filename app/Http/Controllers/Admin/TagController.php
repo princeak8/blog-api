@@ -55,9 +55,10 @@ class TagController extends Controller
                 return response()->json($validator->errors(), 422);
             }
 
-            $this->tagService->save($request->all());
+            $tag = $this->tagService->save($request->all());
             return response()->json([
                 'statusCode' => 200,
+                'data' => $tag,
                 'message' => 'Saved Successfully'
             ], 200);
         }catch(\Exception $e){
@@ -82,9 +83,10 @@ class TagController extends Controller
             }
             $tag = $this->tagService->getTag($request->input('tag_id'));
             if($tag) {
-                $this->tagService->update($tag, $request->all());
+                $tag = $this->tagService->update($tag, $request->all());
                 return response()->json([
                     'statusCode' => 200,
+                    'data' => $tag,
                     'message' => 'updated Successfully'
                 ], 200);
             }else{
