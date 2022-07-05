@@ -24,7 +24,7 @@ class CommentController extends Controller
      */
     
     public function __construct() {
-        $this->middleware('auth:api');
+        $this->middleware('blogAuth');
         $this->postService = new PostService;
         $this->commentService = new CommentService;
     }

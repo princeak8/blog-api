@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 
 use App\Services\UserService;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\ReaderResource;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -20,20 +20,20 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request){
         $credentials = $request->only('email', 'password');
-        if (! $token = auth()->attempt($credentials)) {
+        if (! $token = auth('reader')->attempt($credentials)) {
             return response()->json([
                 'statusCode' => 401,
                 'error' => 'Wrong Username or Password'
             ], 401);
         }
-        $user = new UserResource(auth::user());
+        $reader = new ReaderResource(auth::user());
         return response()->json([
             'statusCode' => 200,
             'data' => [
                 'token' => $token,
                 'token_type' => 'bearer',
                 'token_expires_in' => auth::factory()->getTTL() * 60, 
-                'user' => $user
+                'user' => $reader
             ]
         ], 200);
     }

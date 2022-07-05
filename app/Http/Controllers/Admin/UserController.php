@@ -10,8 +10,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CreateProfileRequest;
 
 use App\Services\ProfileService;
+use App\Services\ReaderService;
 
 use App\Http\Resources\ProfileResource;
+use App\Http\Resources\ReaderResource;
 
 class UserController extends Controller
 {
@@ -20,6 +22,7 @@ class UserController extends Controller
     public function __construct() {
         $this->middleware('auth:api');
         $this->profileService = new ProfileService;
+        $this->readerService = new ReaderService;
     }
 
     public function create_profile(CreateProfileRequest $request)
@@ -31,6 +34,8 @@ class UserController extends Controller
             $profile = $this->profileService->getProfileByUserId(auth::user()->id);
             if(!$profile) {
                 $profile = $this->profileService->save($post);
+                $reader = ['email'=>auth::user()->email, 'password'=>auth::user()->password, 'name'=>auth::user()->name, 'is_admin'=>1];
+                $this->readerService->save($reader);
                 return response()->json([
                     'statusCode' => 200,
                     'data' => new ProfileResource($profile),

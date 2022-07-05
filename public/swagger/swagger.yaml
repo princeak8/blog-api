@@ -459,6 +459,36 @@ paths:
           description: "Validation error"
         "500":
           description: "An error occured while attempting to perform operation"
+
+ /admin/file/save:
+    post:
+      tags:
+      - "Admin/File"
+      summary: "Uploads a file/Image"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "image"
+        in: "formData"
+        description: "The image to be uploaded"
+        required: true
+        type: "string"
+      security:
+      - jwt_token: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/File"
+        "422":
+          description: "Validation error"
+        "500":
+          description: "An error occured while attempting to perform operation"
   
 securityDefinitions:
   api_key:

@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Reader;
+
+class ReaderService 
+{
+
+    public function getReaderById($id)
+    {
+        return Reader::find($id);
+    }
+
+    public function save($data)
+    {
+        return Reader::create($data);
+    }
+
+    public function update($reader, $data)
+    {
+
+        if(isset($data['name'])) $reader->name = $data['name'];
+        $reader->update();
+    }
+
+}
+
+
+
+?>
