@@ -460,7 +460,7 @@ paths:
         "500":
           description: "An error occured while attempting to perform operation"
 
- /admin/file/save:
+  /admin/file/save:
     post:
       tags:
       - "Admin/File"
