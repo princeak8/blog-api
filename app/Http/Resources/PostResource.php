@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\PostTagResource;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\FileResource;
 
 class PostResource extends JsonResource
 {
@@ -22,6 +23,8 @@ class PostResource extends JsonResource
             'id' => $this->id,
             // 'user' => $this->user,
             'title' => $this->title,
+            'coverImage' => new FileResource($this->coverImage),
+            'preview' => $this->preview,
             'content' => $this->content,
             'category' => new CategoryResource($this->category),
             'tags' => PostTagResource::collection($this->tags),
