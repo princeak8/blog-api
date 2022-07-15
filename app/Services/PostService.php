@@ -136,7 +136,7 @@ class PostService
 
     public function togglePublish($post)
     {
-        $post->publish ^= 1;
+        $post->published ^= 1;
         $post->update();
         return $post;
     }

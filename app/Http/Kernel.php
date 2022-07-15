@@ -55,6 +55,7 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'setDB' => 'App\Http\Middleware\SetDB',
+        'ignoreRouteParam' => 'App\Http\Middleware\IgnoreRouteParam',
         'blogAuth' => 'App\Http\Middleware\BlogAuth',
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,

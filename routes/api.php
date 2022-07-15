@@ -23,25 +23,15 @@ use Illuminate\Support\Facades\Route;
 //     return Auth::user();
 // });
 
-Route::group([
-    'prefix' => 'v1/{db}',
-    'middleware' => 'setDB'
-
-], function () {
-    Route::get('/posts', 'PostController@posts');
-    Route::get('/post/{post_id}', 'PostController@post');
-});
-
-
 //Admin Routes
 Route::group([
     'prefix' => 'v1/{db}/admin/',
     'namespace' => 'Admin',
-    'middleware' => 'setDB'
+    'middleware' => ['setDB', 'ignoreRouteParam']
 
 ], function () {
     //Auth Routes
-    // Route::post('/login', 'AuthController@login');
+    Route::post('/login', 'AuthController@login');
 
     //Profile Routes
     Route::group([
@@ -102,7 +92,15 @@ Route::group([
     ], function () {
         Route::post('/login', 'LoginController@login');
     });
-        
+    
+    // Route::group([
+    //     'prefix' => 'v1/{db}',
+    //     'middleware' => 'setDB'
+    
+    // ], function () {
+    //     Route::get('/posts', 'PostController@posts');
+    //     Route::get('/post/{post_id}', 'PostController@post');
+    // });
     //Post Routes
     Route::group([
         'prefix' => 'post'
