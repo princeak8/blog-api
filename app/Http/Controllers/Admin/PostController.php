@@ -201,6 +201,24 @@ class PostController extends Controller
         }
     }
 
+    public function all()
+    {
+        //$user_id = 1;
+        try{
+            $posts = $this->postService->getPosts(auth::user()->id);
+            return response()->json([
+                'statusCode' => 200,
+                'data' => PostResource::collection($posts)
+            ], 200);
+        }catch(\Exception $e){
+            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
+            ], 500);
+        }
+    }
+
     public function public_posts()
     {
         $user_id = 1;

@@ -56,6 +56,7 @@ Route::group([
     Route::group([
         'prefix' => 'post'
     ], function () {
+        Route::get('/all', 'PostController@all');
         Route::get('/public', 'PostController@public_posts');
         Route::get('/published', 'PostController@published_posts');
         Route::get('/unpublished', 'PostController@unpublished_posts');
