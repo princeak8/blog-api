@@ -17,8 +17,6 @@ class CreateCommentRepliesTable extends Migration
             $table->increments('id');
             $table->foreignId('comment_id');
             $table->foreignId('reader_id')->nullable();
-            $table->foreignId('admin_id')->nullable();
-            $table->string('name', 50);
             $table->text('message');
             $table->timestamps();
         });

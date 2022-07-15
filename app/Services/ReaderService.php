@@ -19,7 +19,6 @@ class ReaderService
 
     public function update($reader, $data)
     {
-
         if(isset($data['name'])) $reader->name = $data['name'];
         $reader->update();
     }

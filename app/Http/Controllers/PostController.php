@@ -11,6 +11,7 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 
 use App\Services\PostService;
+use App\Services\CommentService;
 
 class PostController extends Controller
 {
@@ -25,7 +26,7 @@ class PostController extends Controller
      */
     public function __construct() {
         $this->postService = new PostService;
-        // $this->commentService = $_commentService;
+        $this->commentService = new CommentService;
     }
 
     public function posts()
@@ -48,7 +49,7 @@ class PostController extends Controller
     public function post($post_id)
     {
         try{
-            $post = $this->postService->getPost($post_id);
+            $post = $this->postService->getPost($post_id, true);
             return response()->json([
                 'statusCode' => 200,
                 'data' => new PostResource($post)

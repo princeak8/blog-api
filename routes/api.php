@@ -95,6 +95,13 @@ Route::group([
     'middleware' => 'setDB'
 
 ], function () {
+
+    //Auth Routes
+    Route::group([
+        'prefix' => 'auth'
+    ], function () {
+        Route::post('/login', 'LoginController@login');
+    });
         
     //Post Routes
     Route::group([
@@ -103,5 +110,13 @@ Route::group([
         Route::get('/all', 'PostController@posts');
         Route::get('/show/{post_id}', 'PostController@post');
         Route::get('/increase_views/{post_id}', 'PostController@increase_view_count');
+    });
+
+    //Comment Routes
+    Route::group([
+        'prefix' => 'comment'
+    ], function () {
+        Route::post('/save', 'CommentController@save');
+        Route::post('/reply', 'CommentController@saveReply');
     });
 });

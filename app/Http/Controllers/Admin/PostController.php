@@ -15,6 +15,7 @@ use Log;
 use App\Http\Resources\PostResource;
 
 use App\Services\PostService;
+use App\Services\CommentService;
 
 class PostController extends Controller
 {
@@ -31,7 +32,7 @@ class PostController extends Controller
         $this->middleware('auth:api');
         // $this->middleware('validatedUser');
         $this->postService = new PostService;
-        // $this->commentService = $_commentService;
+        $this->commentService = new CommentService;
     }
 
     public function save(SavePostRequest $request)
@@ -45,7 +46,7 @@ class PostController extends Controller
                 return response()->json([
                     'statusCode' => 200,
                     'message' => 'Saved Successfully',
-                    // 'data' => new PostResource($post)
+                    'data' => new PostResource($post)
                 ], 200);
             }else{
                 return response()->json([

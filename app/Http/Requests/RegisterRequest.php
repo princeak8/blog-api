@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class SaveCommentRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +26,9 @@ class SaveCommentRequest extends FormRequest
     public function rules()
     {
         return [
-            'reader_id' => 'required|integer',
-            'post_id' => 'required|integer',
-            'message' => 'required|string|min:1',
+            'name' => 'required|string',
+            'email' => 'required|string|email|unique:readers',
+            'password' => 'required|string'
         ];
     }
 

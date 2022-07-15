@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Http\Resources\ReaderResource;
+
 class CommentResource extends JsonResource
 {
     /**
@@ -16,7 +18,8 @@ class CommentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'post_id' => $this->post_id, 
+            'reader' => new ReaderResource($this->reader),
             'message' => $this->message,
             'created_at' => $this->created_at->diffForHumans()
         ];

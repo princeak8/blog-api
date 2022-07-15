@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class CommentReply extends Model
 {
     use HasFactory;
 
@@ -14,11 +14,11 @@ class Comment extends Model
      *
      * @var array
      */
-    protected $fillable = ['post_id','message','reader_id'];
+    protected $fillable = ['comment_id','message','reader_id'];
 
-    public function post()
+    public function comment()
     {
-        return $this->belongsTo('App\Models\Post');
+        return $this->belongsTo('App\Models\Comment');
     }
 
     public function reader()

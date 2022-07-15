@@ -12,9 +12,9 @@ use App\Models\File;
 class PostService 
 {
 
-    public function getPost($id)
+    public function getPost($id, $withComments=false)
     {
-        return Post::find($id);
+        return (!$withComments) ? Post::find($id) : Post::with('comments')->where('id', $id)->first();
     }
 
     public function posts()

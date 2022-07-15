@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Models\Comment;
+use App\Models\CommentReply;
 
 class CommentService 
 {
@@ -32,6 +33,12 @@ class CommentService
     {
         $comment = Comment::create($data);
         return $comment;
+    }
+
+    public function saveReply($data)
+    {
+        $reply = CommentReply::create($data);
+        return $reply;
     }
 
     public function delete($comment)
