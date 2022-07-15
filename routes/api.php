@@ -82,7 +82,7 @@ Route::group([
 //Public Routes
 Route::group([
     'prefix' => 'v1/{db}/',
-    'middleware' => 'setDB'
+    'middleware' => ['setDB', 'ignoreRouteParam']
 
 ], function () {
 
