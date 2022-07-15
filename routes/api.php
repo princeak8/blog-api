@@ -65,7 +65,7 @@ Route::group([
         Route::post('/update', 'PostController@update');
         Route::delete('/delete/{post_id}', 'PostController@delete');
         Route::get('/toggle_publish/{post_id}', 'PostController@toggle_publish');
-        Route::get('/toggle_publish/{post_id}', 'PostController@toggle_visibility');
+        Route::get('/toggle_visibility/{post_id}', 'PostController@toggle_visibility');
         Route::get('/{post_id}', 'PostController@post');
         
     }); 
