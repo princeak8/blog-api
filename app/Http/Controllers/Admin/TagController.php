@@ -33,7 +33,7 @@ class TagController extends Controller
             $tags = ($tags->count() > 0) ? TagResource::collection($tags) : [];
             return response()->json([
                 'statusCode' => 200,
-                'data' => $tags
+                'data' => TagResource::collection($tags)
             ], 200);
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
@@ -86,7 +86,7 @@ class TagController extends Controller
                 $tag = $this->tagService->update($tag, $request->all());
                 return response()->json([
                     'statusCode' => 200,
-                    'data' => $tag,
+                    'data' => new TagResource($tag),
                     'message' => 'updated Successfully'
                 ], 200);
             }else{
