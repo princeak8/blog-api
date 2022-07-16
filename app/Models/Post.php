@@ -38,7 +38,7 @@ class Post extends Model
 
     public function tags()
     {
-        return $this->hasMany('App\Models\Tag', 'App\Models\PostTag');
+        return $this->belongsToMany('App\Models\Tag', 'App\Models\PostTag', 'tag_id', 'post_id');
     }
 
     public static function boot ()

@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-use App\Http\Resources\PostTagResource;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\CategoryResource;

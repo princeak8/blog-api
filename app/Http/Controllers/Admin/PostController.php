@@ -206,7 +206,7 @@ class PostController extends Controller
     {
         //$user_id = 1;
         try{
-            $posts = $this->postService->getPosts(auth::user()->id);
+            $posts = $this->postService->getPosts();
             return response()->json([
                 'statusCode' => 200,
                 'data' => PostResource::collection($posts)

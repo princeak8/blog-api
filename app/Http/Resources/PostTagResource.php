@@ -4,6 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Http\Resources\PostResource;
+use App\Http\Resources\TagResource;
+
 class PostTagResource extends JsonResource
 {
     /**
@@ -15,8 +18,8 @@ class PostTagResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'tag_id' => $this->tag->id,
-            'tag' => $this->tag->name,
+            'tag' => new TagResource($this->tag),
+            'post' => new PostResource($this->post),
         ];
     }
 }

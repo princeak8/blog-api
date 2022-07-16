@@ -27,9 +27,9 @@ class PostService
         return Post::where('published', 1)->where('visible', 1)->count();
     }
 
-    public function getPosts($user_id)
+    public function getPosts($user_id=null)
     {
-        return Post::where('user_id', $user_id)->get();
+        return ($user_id==null) ? Post::all() : Post::where('user_id', $user_id)->get();
     }
 
     public function getPostsCount($user_id)
