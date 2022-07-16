@@ -58,7 +58,7 @@ class TagController extends Controller
             $tag = $this->tagService->save($request->all());
             return response()->json([
                 'statusCode' => 200,
-                'data' => $tag,
+                'data' => new TagResource($tag),
                 'message' => 'Saved Successfully'
             ], 200);
         }catch(\Exception $e){
