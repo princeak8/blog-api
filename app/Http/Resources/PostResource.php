@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 use App\Http\Resources\PostTagResource;
+use App\Http\Resources\TagResource;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\FileResource;
@@ -27,7 +28,7 @@ class PostResource extends JsonResource
             'preview' => $this->preview,
             'content' => $this->content,
             'category' => new CategoryResource($this->category),
-            'tags' => PostTagResource::collection($this->tags),
+            'tags' => TagResource::collection($this->tags),
             'published' => ($this->published==1) ? True : False,
             'visible' => ($this->visible==1) ? True : False,
             'views_count' => $this->views_count,
