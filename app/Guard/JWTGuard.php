@@ -44,6 +44,7 @@
                 $this->user->id = $id;
                 $this->user->domain = $this->jwt->payload()->get('domain');
                 $this->user->email = $this->jwt->payload()->get('email');
+                $this->user->password = $this->jwt->payload()->get('password');
                 // Set data from custom claims 
                 return $this->user;
             }
