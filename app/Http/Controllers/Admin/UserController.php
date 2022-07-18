@@ -33,9 +33,10 @@ class UserController extends Controller
             $post['email'] = auth::user()->email;
             $profile = $this->profileService->getProfileByUserId(auth::user()->id);
             if(!$profile) {
-                dd($post);
+                //dd($post);
                 $profile = $this->profileService->save($post);
                 $reader = ['email'=>auth::user()->email, 'password'=>auth::user()->password, 'name'=>auth::user()->name, 'is_admin'=>1];
+                dd($reader);
                 $this->readerService->save($reader);
                 return response()->json([
                     'statusCode' => 200,
