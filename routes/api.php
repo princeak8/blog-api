@@ -91,6 +91,7 @@ Route::group([
         'prefix' => 'auth'
     ], function () {
         Route::post('/login', 'LoginController@login');
+        Route::post('/register', 'RegisterController@register');
     });
     
     // Route::group([

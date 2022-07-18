@@ -14,6 +14,7 @@ class ReaderService
 
     public function save($data)
     {
+        $data['password'] = bcrypt($data['password']);
         return Reader::create($data);
     }
 

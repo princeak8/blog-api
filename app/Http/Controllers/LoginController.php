@@ -18,7 +18,7 @@ class LoginController extends Controller
      */
     public function login(LoginRequest $request){
         $credentials = $request->only('email', 'password');
-        if (! $token = auth('reader')->attempt($credentials)) {
+        if (! $token = Auth::guard('reader')->attempt($credentials)) {
             return response()->json([
                 'statusCode' => 401,
                 'error' => 'Wrong Username or Password'
@@ -30,7 +30,7 @@ class LoginController extends Controller
             'data' => [
                 'token' => $token,
                 'token_type' => 'bearer',
-                'token_expires_in' => auth::factory()->getTTL() * 60, 
+                'token_expires_in' => Auth::guard('reader')->factory()->getTTL() * 60, 
                 'user' => $user
             ]
         ], 200);

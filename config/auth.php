@@ -74,6 +74,11 @@ return [
             'model' => App\Models\User::class,
         ],
 
+        'readers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Reader::class,
+        ],
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
