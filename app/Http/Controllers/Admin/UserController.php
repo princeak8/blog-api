@@ -36,7 +36,6 @@ class UserController extends Controller
                 //dd($post);
                 $profile = $this->profileService->save($post);
                 $reader = ['email'=>auth::user()->email, 'password'=>auth::user()->password, 'name'=>$post['name'], 'is_admin'=>1];
-                dd($reader);
                 $this->readerService->save($reader);
                 return response()->json([
                     'statusCode' => 200,
