@@ -27,6 +27,7 @@ class UserController extends Controller
 
     public function create_profile(CreateProfileRequest $request)
     {
+        dd(auth::user());
         try{
             $post = $request->all();
             $post['user_id'] = auth::user()->id;
