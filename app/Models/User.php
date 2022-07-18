@@ -32,7 +32,7 @@ class User extends Authenticatable implements AuthenticatableContract
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
+        // 'password',
         'remember_token',
     ];
 
@@ -48,7 +48,7 @@ class User extends Authenticatable implements AuthenticatableContract
     
     public function getAuthPassword()
     {
-        return null;
+        return $this->password;
     }
     
     public function getRememberToken()
