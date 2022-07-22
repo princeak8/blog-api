@@ -106,7 +106,9 @@ Route::group([
     Route::group([
         'prefix' => 'post'
     ], function () {
-        Route::get('/all', 'PostController@posts');
+        Route::get('/posts', 'PostController@posts');
+        Route::get('/posts/{page}', 'PostController@posts');
+        Route::get('/latest_posts', 'PostController@latestPosts');
         Route::get('/show/{post_id}', 'PostController@post');
         Route::get('/increase_views/{post_id}', 'PostController@increase_view_count');
     });

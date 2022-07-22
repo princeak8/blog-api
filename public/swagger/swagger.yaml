@@ -569,11 +569,47 @@ paths:
         "500":
           description: "An error occured while attempting to perform operation"
 
-  post/all:
+  post/posts:
     get:
       tags:
       - "Post"
-      summary: "View all public posts"
+      summary: "View all public posts for the first page"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Post"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  post/posts/{page}:
+    get:
+      tags:
+      - "Post"
+      summary: "View all public posts for the page"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Post"
+        "500":
+          description: "An error occured while attempting to perform operation"
+
+  post/latest_posts:
+    get:
+      tags:
+      - "Post"
+      summary: "gets the latest posts"
       description: ""
       produces:
       - "application/json"

@@ -16,6 +16,7 @@ class Profile extends Model
      */
     protected $fillable = [
         'user_id',
+        'blog_name',
         'name',
         'email',
         'about',

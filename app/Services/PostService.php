@@ -19,17 +19,23 @@ class PostService
 
     public function posts()
     {
-        return Post::where('published', 1)->where('visible', 1)->get();
+        return Post::where('published', 1)->where('visible', 1)->orderBy('created_at', 'desc')->get();
     }
 
-    public function postsCount($user_id)
+    public function paginatedPosts($page)
+    {
+        $offset = ($page-1) * Post::$perPage;
+        return Post::where('published', 1)->where('visible', 1)->orderBy('created_at', 'desc')->limit(Post::$perPage)->offset($offset)->get();
+    }
+
+    public function postsCount()
     {
         return Post::where('published', 1)->where('visible', 1)->count();
     }
 
     public function getPosts($user_id=null)
     {
-        return ($user_id==null) ? Post::all() : Post::where('user_id', $user_id)->get();
+        return ($user_id==null) ? Post::orderBy('created_at', 'desc')->get() : Post::where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
     }
 
     public function getPostsCount($user_id)
@@ -75,6 +81,11 @@ class PostService
     public function getHiddenPostsCount($user_id)
     {
         return Post::where('user_id', $user_id)->where('hidden', 0)->count();
+    }
+
+    public function latestPosts()
+    {
+        return Post::where('published', 1)->where('visible', 1)->orderBy('created_at', 'desc')->limit(5)->get();
     }
 
     public function save($data)
