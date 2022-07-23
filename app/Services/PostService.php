@@ -24,8 +24,8 @@ class PostService
 
     public function paginatedPosts($page)
     {
-        $offset = ($page-1) * Post::$perPage;
-        return Post::where('published', 1)->where('visible', 1)->orderBy('created_at', 'desc')->limit(Post::$perPage)->offset($offset)->get();
+        $offset = ($page-1) * Post::$per_page;
+        return Post::where('published', 1)->where('visible', 1)->orderBy('created_at', 'desc')->limit(Post::$per_page)->offset($offset)->get();
     }
 
     public function postsCount()

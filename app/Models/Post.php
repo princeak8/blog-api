@@ -9,7 +9,7 @@ class Post extends Model
 {
     use HasFactory;
 
-    public static $perPage = 15;
+    public static $per_page = 15;
 
     /**
      * The attributes that are mass assignable.

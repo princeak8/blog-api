@@ -40,7 +40,7 @@ class PostController extends Controller
                 'data' => PostResource::collection($posts),
                 'meta' => [
                     'totalPosts' => $count,
-                    'perPage' => Post::$perPage
+                    'perPage' => Post::$per_page
                 ]
             ], 200);
         }catch(\Exception $e){
