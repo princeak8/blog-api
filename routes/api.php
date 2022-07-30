@@ -97,7 +97,7 @@ Route::group([
     //Settings Routes
     Route::group([
     ], function () {
-        Route::get('/settings', 'ProfilenController@get_profile');
+        Route::get('/settings', 'ProfileController@get_profile');
     });
     
     // Route::group([
