@@ -7,6 +7,11 @@ use App\Models\Profile;
 class ProfileService 
 {
 
+    public function getProfile()
+    {
+        return Profile::first();
+    }
+    
     public function getProfileByUserId($id)
     {
         return Profile::where('user_id', $id)->first();

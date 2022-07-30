@@ -93,6 +93,13 @@ Route::group([
         Route::post('/login', 'LoginController@login');
         Route::post('/register', 'RegisterController@register');
     });
+
+    //Settings Routes
+    Route::group([
+        'prefix' => 'auth'
+    ], function () {
+        Route::get('/settings', 'ProfilenController@get_profile');
+    });
     
     // Route::group([
     //     'prefix' => 'v1/{db}',
