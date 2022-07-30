@@ -96,7 +96,6 @@ Route::group([
 
     //Settings Routes
     Route::group([
-        'prefix' => 'auth'
     ], function () {
         Route::get('/settings', 'ProfilenController@get_profile');
     });
