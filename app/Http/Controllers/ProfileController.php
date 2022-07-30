@@ -27,7 +27,7 @@ class ProfileController extends Controller
             $profile = $this->profileService->getProfile();
             return response()->json([
                 'statusCode' => 200,
-                'data' => ProfileResource::collection($profile )
+                'data' => new ProfileResource($profile)
             ], 200);
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
