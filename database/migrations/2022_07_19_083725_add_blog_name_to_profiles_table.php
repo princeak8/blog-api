@@ -14,7 +14,7 @@ class AddBlogNameToProfilesTable extends Migration
     public function up()
     {
         Schema::table('profiles', function (Blueprint $table) {
-            $table->boolean('blog_name')->nullable()->after('user_id');
+            $table->string('blog_name')->nullable()->after('user_id');
         });
     }
 
