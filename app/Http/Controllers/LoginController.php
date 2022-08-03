@@ -16,7 +16,8 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(LoginRequest $request){
+    public function login(Request $request){
+        dd($request->all());
         $credentials = $request->only('email', 'password');
         if (! $token = Auth::guard('reader')->attempt($credentials)) {
             return response()->json([
