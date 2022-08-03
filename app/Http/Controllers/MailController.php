@@ -18,4 +18,10 @@ class MailController extends Controller
         });
         echo "Basic Email Sent. Check your inbox.";
     }
+
+    public function test_mail_view()
+    {
+        $name = "David";
+        return view('mails.test', compact('name'));
+    }
 }

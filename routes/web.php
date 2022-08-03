@@ -19,3 +19,4 @@ Route::get('/', function () {
 
 Route::get('/api-doc', 'SwaggerController@index');
 Route::get('/test-mail', 'MailController@test');
+Route::get('/test-mail', 'MailController@test_mail_view');
