@@ -11,10 +11,10 @@
                     <img src="{{env('APP_URL').'images/car.jpg'}}" width="300" height="150" />
                 </div>
                 <div style="display:flex; flex-direction:column;">
-                    <div style="margin-bottom: 20px;">
+                    <div style="margin-bottom: 20px; width:100%">
                         <h1>PRINCEAK BLOG</h1>
                     </div>
-                    <div style="margin-top: 20px">
+                    <div style="margin-top: 20px; width:100%">
                         <p>Hi <b>{{$name}}</b>
                         Sending Mail from Laravel.</p>
                     </div>
