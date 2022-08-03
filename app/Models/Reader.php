@@ -61,6 +61,6 @@ class Reader extends Authenticatable implements JWTSubject
      * @return array
      */
     public function getJWTCustomClaims() {
-        return ['id'=>$this->id, 'name'=>$this->name, 'email'=>$this->email, 'is_admin'=>false];
+        return [];
     }
 }
