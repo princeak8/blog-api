@@ -25,6 +25,7 @@ class LoginController extends Controller
                 'error' => 'Wrong Username or Password'
             ], 401);
         }
+        dd(auth::user('reader'));
         $user = new ReaderResource(auth::user('reader'));
         return response()->json([
             'statusCode' => 200,
