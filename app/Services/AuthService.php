@@ -11,7 +11,7 @@ use App\Models\Reader;
 
 class AuthService
 {
-    public function emailVerificationLink($reader)
+    public function emailVerificationLink($reader, $domain)
     {
         do{
             $token = '';
@@ -23,7 +23,7 @@ class AuthService
             $exists = $this->getToken($reader->id, $token);
         } while ($exists);
         $this->saveSignature($reader->id, $signature);
-        return env('APP_URL').'verify_email/'.$reader->email.'/'.$signature;
+        return env('APP_URL').$domain.'/'.'verify_email/'.$reader->email.'/'.$signature;
     }
 
     public function getToken($reader_id, $token)

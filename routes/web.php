@@ -20,3 +20,16 @@ Route::get('/', function () {
 Route::get('/api-doc', 'SwaggerController@index');
 Route::get('/test-mail', 'MailController@test');
 Route::get('/test-mail-view', 'MailController@test_mail_view');
+
+Route::group([
+    'prefix' => 'v1/{db}/',
+    'middleware' => ['setDB']
+
+], function () {
+
+    //Auth Routes
+    Route::group([
+    ], function () {
+        Route::get('/verify_email/{email}/{signature}', 'RegisterController@login');
+    });
+});

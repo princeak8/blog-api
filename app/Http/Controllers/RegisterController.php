@@ -32,24 +32,31 @@ class RegisterController extends Controller
     public function register(RegisterRequest $request)
     {
         try{
-            dd($request->route('db'));
-            $reader = $this->readerService->save($request->validated());
-            $blog = $this->profileService->getProfile();
-            $emailLink = $this->authService->emailVerificationLink($reader);
-            try{
-                $data = ['name'=>$reader->name, 'link'=>$emailLink, 'blog'=>$blog];
-                Mail::send('mails.verify_email', $data, function($message) use($reader, $blog) {
-                    $message->to($reader->email, $reader->name)->subject
-                        ('Verify your Email');
-                    $message->from('noreply@zizix6host.com',$blog->blog_name);
-                });
-            }catch(\Throwable $th) {
-                \Log::stack(['project'])->info('could not send email '.$th->getMessage());
+            $data = $request->all();
+            if(isset($data['domain'])) {
+                $reader = $this->readerService->save($request->validated());
+                $blog = $this->profileService->getProfile();
+                $emailLink = $this->authService->emailVerificationLink($reader, $data['domain']);
+                // try{
+                //     $data = ['name'=>$reader->name, 'link'=>$emailLink, 'blog'=>$blog];
+                //     Mail::send('mails.verify_email', $data, function($message) use($reader, $blog) {
+                //         $message->to($reader->email, $reader->name)->subject
+                //             ('Verify your Email');
+                //         $message->from('noreply@zizix6host.com',$blog->blog_name);
+                //     });
+                // }catch(\Throwable $th) {
+                //     \Log::stack(['project'])->info('could not send email '.$th->getMessage());
+                // }
+                return response()->json([
+                    'statusCode' => 200,
+                    'message' => 'Registeration Successful.. An Email confirmation link has been sent to your mail. Confirm your email and login'
+                ], 200);
+            }else{
+                return response()->json([
+                    'statusCode' => 500,
+                    'message' => 'Domain is not set in the post data'
+                ], 500);
             }
-            return response()->json([
-                'statusCode' => 200,
-                'data' => new ReaderResource($reader)
-            ], 200);
         }catch (\Throwable $th) {
             \Log::stack(['project'])->info($th->getMessage().' in '.$th->getFile().' at Line '.$th->getLine());
             return response()->json([
@@ -59,7 +66,7 @@ class RegisterController extends Controller
         }
     }
 
-    public function verify_email($email, $signature)
+    public function verify_email($domain, $email, $signature)
     {
         try{
             $blog = $this->profileService->getProfile();
@@ -67,10 +74,7 @@ class RegisterController extends Controller
             if($reader) {
                 //$this->authService->ver
             }else{
-                return response()->json([
-                    'statusCode' => 404,
-                    'message' => new ReaderResource($reader)
-                ], 404);
+                redirect('https://'.$domain.'.com/email_user_not_found');
             }
             
         }catch (\Throwable $th) {
