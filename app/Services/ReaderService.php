@@ -12,6 +12,11 @@ class ReaderService
         return Reader::find($id);
     }
 
+    public function getReaderByEmail($email)
+    {
+        return Reader::where('email', $email)->first();
+    }
+
     public function save($data)
     {
         $data['password'] = bcrypt($data['password']);

@@ -32,6 +32,7 @@ class RegisterController extends Controller
     public function register(RegisterRequest $request)
     {
         try{
+            dd($request->route('db'));
             $reader = $this->readerService->save($request->validated());
             $blog = $this->profileService->getProfile();
             $emailLink = $this->authService->emailVerificationLink($reader);
@@ -49,6 +50,29 @@ class RegisterController extends Controller
                 'statusCode' => 200,
                 'data' => new ReaderResource($reader)
             ], 200);
+        }catch (\Throwable $th) {
+            \Log::stack(['project'])->info($th->getMessage().' in '.$th->getFile().' at Line '.$th->getLine());
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
+            ], 500);
+        }
+    }
+
+    public function verify_email($email, $signature)
+    {
+        try{
+            $blog = $this->profileService->getProfile();
+            $reader = $this->readerService->getReaderByEmail($email);
+            if($reader) {
+                //$this->authService->ver
+            }else{
+                return response()->json([
+                    'statusCode' => 404,
+                    'message' => new ReaderResource($reader)
+                ], 404);
+            }
+            
         }catch (\Throwable $th) {
             \Log::stack(['project'])->info($th->getMessage().' in '.$th->getFile().' at Line '.$th->getLine());
             return response()->json([
