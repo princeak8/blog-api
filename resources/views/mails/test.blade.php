@@ -5,12 +5,12 @@
     >
     </header>
     <body>
-        <div style="display:flex; justify-content:center">
+        <div>
             <div>
                 <div style="margin-bottom: 20px;">
                     <img src="{{env('APP_URL').'images/car.jpg'}}" width="300" height="150" />
                 </div>
-                <div style="display:flex; flex-direction:column;">
+                <div>
                     <div style="margin-bottom: 20px; width:100%">
                         <h1>PRINCEAK BLOG</h1>
                     </div>
