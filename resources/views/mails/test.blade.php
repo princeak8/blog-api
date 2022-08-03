@@ -12,9 +12,10 @@
                 </div>
                 <div style="display:flex; flex-direction:column; align-items:center">
                     <h1>PRINCEAK BLOG</h1>
-
-                    <p>Hi <b>{{$name}}</b>
-                    Sending Mail from Laravel.</p>
+                    <div style="margin-top: 20px">
+                        <p>Hi <b>{{$name}}</b>
+                        Sending Mail from Laravel.</p>
+                    </div>
                 </div>
             </div>
         </div>
