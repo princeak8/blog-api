@@ -12,11 +12,16 @@
                 </div> -->
                 <div>
                     <div style="margin-bottom: 20px; width:100%">
-                        <h1>PRINCEAK BLOG</h1>
+                        <h1>{{$blog->blog_name}}</h1>
                     </div>
                     <div style="margin-top: 20px; width:100%">
-                        <p>Hi <b>{{$name}}</b>
-                        Sending Mail from Laravel.</p>
+                        <p>Hello <b>{{$name}}</b>,
+                        Thank you for registering..</p>
+                    </div>
+
+                    <div>
+                        Click <a href="{{$link}}">HERE</a> to verify your email. 
+                        <p>Please Note that the above link will expire in the next 2hours</p>
                     </div>
                 </div>
             </div>
