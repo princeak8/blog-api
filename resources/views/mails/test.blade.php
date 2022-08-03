@@ -10,7 +10,7 @@
                 <div style="margin-bottom: 20px;">
                     <img src="{{env('APP_URL').'images/car.jpg'}}" width="300" height="150" />
                 </div>
-                <div style="display:flex; flex-direction:column; align-items:center">
+                <div style="display:flex; flex-direction:column;">
                     <h1>PRINCEAK BLOG</h1>
                     <div style="margin-top: 20px">
                         <p>Hi <b>{{$name}}</b>
