@@ -73,10 +73,10 @@ class PostController extends Controller
     {
         try{
             $post = $this->postService->getPost($post_id, true);
-            dd($post);
+            //dd($post);
             return response()->json([
                 'statusCode' => 200,
-                'data' => new PostResource($post)
+                'data' => ($post) ? new PostResource($post) : []
             ], 200);
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
