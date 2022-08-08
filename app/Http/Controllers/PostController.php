@@ -80,7 +80,7 @@ class PostController extends Controller
             ], 200);
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
-            dd($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            //dd($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'

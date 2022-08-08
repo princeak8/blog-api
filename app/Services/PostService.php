@@ -16,8 +16,8 @@ class PostService
     {
         //dd($id);
         //return Post::with('comments')->where('id', $id)->first();
-        return Post::find($id);
-        //return (!$withComments) ? Post::find($id) : Post::with('comments')->where('id', $id)->first();
+        //return Post::find($id);
+        return (!$withComments) ? Post::find($id) : Post::with('comments')->where('id', $id)->first();
     }
 
     public function posts()

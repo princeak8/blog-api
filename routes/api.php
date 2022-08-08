@@ -126,9 +126,5 @@ Route::group([
         Route::post('/save', 'CommentController@save');
         Route::post('/reply', 'CommentController@saveReply');
     });
-
-    // test
-    Route::get('/readerss', function() {
-        return \Reader::all();
-    });
+    
 });

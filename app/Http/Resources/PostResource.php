@@ -31,7 +31,7 @@ class PostResource extends JsonResource
             'published' => ($this->published==1) ? True : False,
             'visible' => ($this->visible==1) ? True : False,
             'views_count' => $this->views_count,
-            'comments_count' => $this->comments,
+            'comments_count' => $this->comments->count(),
             'comments' => CommentResource::collection($this->whenLoaded('comments')),
             'edited' => ($this->created_at != $this->updated_at),
             'published_at' => ($this->published_at) ? $this->published_at->diffForHumans() : null,
