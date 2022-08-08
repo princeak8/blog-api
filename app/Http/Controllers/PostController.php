@@ -73,6 +73,7 @@ class PostController extends Controller
     {
         try{
             $post = $this->postService->getPost($post_id, true);
+            dd($post);
             return response()->json([
                 'statusCode' => 200,
                 'data' => new PostResource($post)
