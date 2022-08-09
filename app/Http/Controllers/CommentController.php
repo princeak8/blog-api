@@ -34,7 +34,7 @@ class CommentController extends Controller
         $input['reader_id'] = auth::user('reader')->id;
         try{
             $comment = $this->commentService->save($input);
-            $comments = $this->commentService->comments($input['post_id']);
+            $comments = $this->commentService->getCommentsByPostId($input['post_id']);
                 return response()->json([
                     'statusCode' => 200,
                     'message' => 'Saved Successfully',

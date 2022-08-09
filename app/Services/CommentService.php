@@ -14,9 +14,9 @@ class CommentService
         return Comment::find($id);
     }
 
-    public function comments($post_id)
+    public function getCommentsByPostId($post_id)
     {
-        return Comment::where('comment_id', $post_id)->get();
+        return Comment::where('post_id', $post_id)->get();
     }
 
     public function commentsCount($post_id)
