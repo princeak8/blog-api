@@ -16,7 +16,7 @@ class CommentService
 
     public function getCommentsByPostId($post_id)
     {
-        return Comment::where('post_id', $post_id)->get();
+        return Comment::where('post_id', $post_id)->orderBy('created_at', 'desc')->get();
     }
 
     public function commentsCount($post_id)
@@ -26,7 +26,7 @@ class CommentService
 
     public function getcomments($user_id)
     {
-        return Comment::where('user_id', $user_id)->get();
+        return Comment::where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
     }
 
     public function save($data)
