@@ -25,4 +25,24 @@ class Comment extends Model
     {
         return $this->belongsTo('App\Models\Reader');
     }
+
+    public function replies()
+    {
+        return $this->hasMany('App\Models\CommentReply')->orderBy('created_at', 'desc');
+    }
+
+    public static function boot ()
+    {
+        parent::boot();
+
+        self::deleting(function (Comment $comment) {
+
+            if($comment->replies && $comment->replies->count() > 0) {
+                foreach ($comment->replies as $reply)
+                {
+                    $reply->delete();
+                }
+            }
+        });
+    }
 }

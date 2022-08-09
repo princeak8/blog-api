@@ -21,6 +21,7 @@ class CommentResource extends JsonResource
             'post_id' => $this->post_id, 
             'reader' => new ReaderResource($this->reader),
             'message' => $this->message,
+            'replies' => $this->replies,
             'created_at' => $this->created_at->diffForHumans()
         ];
     }

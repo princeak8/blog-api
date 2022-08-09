@@ -54,11 +54,12 @@ class CommentController extends Controller
         $input = $request->all();
         $input['reader_id'] = auth::user('reader')->id;
         try{
-            $reply = $this->commentService->saveReply($input);
+            $this->commentService->saveReply($input);
+            $replies = $this->commentService->getRepliesByCommentId($input['comment_id']);
                 return response()->json([
                     'statusCode' => 200,
                     'message' => 'Saved Successfully',
-                    'data' => new CommentReplyResource($reply)
+                    'data' => CommentReplyResource::collection($replies)
                 ], 200);
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
