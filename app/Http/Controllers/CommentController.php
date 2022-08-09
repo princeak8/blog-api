@@ -34,10 +34,11 @@ class CommentController extends Controller
         $input['reader_id'] = auth::user('reader')->id;
         try{
             $comment = $this->commentService->save($input);
+            $comments = $this->commentService->comments($input['post_id']);
                 return response()->json([
                     'statusCode' => 200,
                     'message' => 'Saved Successfully',
-                    'data' => new CommentResource($comment)
+                    'data' => CommentResource::collection($comments)
                 ], 200);
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
