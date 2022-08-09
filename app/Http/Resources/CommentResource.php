@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 use App\Http\Resources\ReaderResource;
+use App\Http\Resources\CommentReplyResource;
 
 class CommentResource extends JsonResource
 {
@@ -21,7 +22,7 @@ class CommentResource extends JsonResource
             'post_id' => $this->post_id, 
             'reader' => new ReaderResource($this->reader),
             'message' => $this->message,
-            'replies' => $this->replies,
+            'replies' => CommentReplyResource::collection($this->replies),
             'created_at' => $this->created_at->diffForHumans()
         ];
     }
