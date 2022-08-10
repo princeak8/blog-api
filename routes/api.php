@@ -73,7 +73,9 @@ Route::group([
     Route::group([
         'prefix' => 'file'
     ], function () {
-        Route::post('/save', 'FileController@save');
+        Route::post('/save_cover_photo', 'FileController@save_cover_photo');
+        Route::post('/save_content_photo', 'FileController@save_content_photo');
+        Route::post('/save_profile_photo', 'FileController@save_profile_photo');
     });
 });
 

@@ -11,7 +11,7 @@ use App\Models\File;
 class FileService 
 {
 
-    public function save($request, $domain, $user_id)
+    public function save($request, $domain, $user_id, $dir)
     {
         $image = $request->file('image');
         // $fileData = [];
@@ -20,7 +20,7 @@ class FileService
         // $fileData['extension'] = $request->file('image')->getClientOriginalExtension();
         // dd($fileData);
         if($request->file('image')->getSize() <= 5000000) {
-            $uploadedPhoto = $image->storeOnCloudinary('blogs/'.$domain);
+            $uploadedPhoto = $image->storeOnCloudinary('blogs/'.$domain.'/'.$dir);
             $filename = $uploadedPhoto->getFileName();
             $url = $uploadedPhoto->getPath();
             $secureUrl = $uploadedPhoto->getSecurePath();

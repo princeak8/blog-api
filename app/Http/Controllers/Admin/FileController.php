@@ -28,10 +28,25 @@ class FileController extends Controller
         $this->fileService = new FileService;
     }
 
-    public function save(saveFileRequest $request)
+    public function save_cover_photo(saveFileRequest $request)
+    {
+        $this->save($request, auth::user()->domain, auth::user()->id, 'cover_photos');
+    }
+
+    public function save_content_photo(saveFileRequest $request)
+    {
+        $this->save($request, auth::user()->domain, auth::user()->id, 'content_photos');
+    }
+
+    public function save_profile_photo(saveFileRequest $request)
+    {
+        $this->save($request, auth::user()->domain, auth::user()->id, 'profile_photos');
+    }
+
+    private function save($request, $domain, $user_id, $dir)
     {
         try{
-            $res = $this->fileService->save($request, auth::user()->domain, auth::user()->id);
+            $res = $this->fileService->save($request, $domain, $user_id, $dir);
             if($res['success']) {
                 return response()->json([
                     'statusCode' => 200,
