@@ -115,7 +115,7 @@ class PostService
     public function update($post, $data)
     {
         if(isset($data['title'])) $post->title = $data['title'];
-        if(isset($data['preview'])) $post->content = $data['preview'];
+        if(isset($data['preview'])) $post->preview = $data['preview'];
         if(isset($data['content'])) $post->content = $data['content'];
         if(isset($data['category_id'])) $post->category_id = $data['category_id'];
         if(isset($data['cover_photo_id'])) $post->cover_photo = $data['cover_photo_id'];
