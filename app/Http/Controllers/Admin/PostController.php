@@ -67,7 +67,7 @@ class PostController extends Controller
     {
         try{
             $input = $request->all();
-            $input['user_id'] = 1;
+            //$input['user_id'] = 1;
             $post = $this->postService->getPost($input['post_id']);
             if($post) {
                 if(isset($input['preview'])) {
