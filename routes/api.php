@@ -67,6 +67,7 @@ Route::group([
         Route::get('/all', 'TagController@tags');
         Route::post('/save', 'TagController@save');
         Route::post('/update', 'TagController@update');
+        Route::get('/delete/{id}', 'TagController@delete_tag');
     }); 
 
     //File Routes

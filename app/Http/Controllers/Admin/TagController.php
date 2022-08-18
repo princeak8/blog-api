@@ -103,4 +103,29 @@ class TagController extends Controller
             ], 500);
         }
     }
+
+    public function delete_tag($id)
+    {
+        try{
+            $tag = $this->tagService->getTag($id);
+            if($tag) {
+                $this->tagService->delete($tag); 
+                return response()->json([
+                    'statusCode' => 200,
+                    'message' => 'Deleted Successfully'
+                ], 200);
+            }else{
+                return response()->json([
+                    'statusCode' => 404,
+                    'message' => 'Tag not found'
+                ], 200);
+            }
+        }catch(\Exception $e){
+            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
+            ], 500);
+        }
+    }
 }

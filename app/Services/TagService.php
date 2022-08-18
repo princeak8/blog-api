@@ -43,6 +43,11 @@ class TagService
         return $tag;
     }
 
+    public function delete($tag)
+    {
+        $tag->delete();
+    }
+
 }
 
 
