@@ -75,7 +75,7 @@ class TagController extends Controller
         try{ 
             $validator = Validator::make($request->all(), [
                 'tag_id' => 'required|integer',
-                'name' => 'required|string|min:1|unique:tags'
+                'name' => 'required|string|min:1|unique:tags,name,' . $request->get('tag_id')
             ]);
 
             if ($validator->fails()) {
