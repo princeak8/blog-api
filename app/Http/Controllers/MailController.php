@@ -11,10 +11,10 @@ class MailController extends Controller
     {
         $data = array('name'=>"David");
    
-        Mail::send('mails.test', $data, function($message) {
+        Mail::mailer('nnedi')->send('mails.test', $data, function($message) {
             $message->to('akalodave@gmail.com', 'David Aneke')->subject
                 ('Laravel HTML Testing Mail');
-            $message->from('admin@zizix6host.com','PrinceAK Blog');
+            $message->from('noreply@successneneeric.com','Success Nnene Eric');
         });
         echo "Basic Email Sent. Check your inbox.";
     }

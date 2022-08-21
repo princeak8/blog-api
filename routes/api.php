@@ -129,5 +129,8 @@ Route::group([
         Route::post('/save', 'CommentController@save');
         Route::post('/reply', 'CommentController@saveReply');
     });
+
+    //Test
+    Route::get('/send_email', 'MailController@post');
     
 });

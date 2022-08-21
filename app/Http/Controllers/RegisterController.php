@@ -38,11 +38,12 @@ class RegisterController extends Controller
                 $blog = $this->profileService->getProfile();
                 $emailLink = $this->authService->emailVerificationLink($reader, $data['domain']);
                 // try{
+                //     $fromAddress = env($data['domain'].'_MAIL_HOST');
                 //     $data = ['name'=>$reader->name, 'link'=>$emailLink, 'blog'=>$blog];
-                //     Mail::send('mails.verify_email', $data, function($message) use($reader, $blog) {
+                //     Mail::mailer($data['domain'])->send('mails.verify_email', $data, function($message) use($reader, $blog) {
                 //         $message->to($reader->email, $reader->name)->subject
                 //             ('Verify your Email');
-                //         $message->from('noreply@zizix6host.com',$blog->blog_name);
+                //         $message->from($fromAddress, $blog->blog_name);
                 //     });
                 // }catch(\Throwable $th) {
                 //     \Log::stack(['project'])->info('could not send email '.$th->getMessage());
