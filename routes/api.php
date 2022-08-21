@@ -131,6 +131,6 @@ Route::group([
     });
 
     //Test
-    Route::get('/send_email', 'MailController@post');
+    Route::get('/send_email', 'MailController@test');
     
 });
