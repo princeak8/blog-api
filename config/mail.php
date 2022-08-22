@@ -126,7 +126,8 @@ function add_new_smtp_mailer($mailConfig, $mailer, $host, $username, $password) 
 } 
 
 $newMailers = [
-    ["name"=>"nnedi", "host"=>env('nnedi_MAIL_HOST'), "username"=>env('nnedi_MAIL_USERNAME'), "password"=>env('nnedi_MAIL_PASSWORD')]
+    ["name"=>"nnedi", "host"=>env('nnedi_MAIL_HOST'), "username"=>env('nnedi_MAIL_USERNAME'), "password"=>env('nnedi_MAIL_PASSWORD')],
+    ["name"=>"blog", "host"=>env('blog_MAIL_HOST'), "username"=>env('blog_MAIL_USERNAME'), "password"=>env('blog_MAIL_PASSWORD')]
 ];
 
 if(count($newMailers) > 0) {
