@@ -57,9 +57,9 @@ class RegisterController extends Controller
                     }catch(\Throwable $th) {
                         \Log::stack(['project'])->info('could not send email '.$th->getMessage());
                         return response()->json([
-                            'statusCode' => 200,
-                            'message' => 'Registeration Successful.. An Email confirmation link has been sent to your mail. Confirm your email and login'
-                        ], 200);
+                            'statusCode' => 201,
+                            'message' => 'Registeration Successful.. But an error occured while attempting to send Email verification link.. please contact the administrator'
+                        ], 201);
                     }
                     
                 }else{
