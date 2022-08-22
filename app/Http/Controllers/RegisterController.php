@@ -34,17 +34,17 @@ class RegisterController extends Controller
     public function register(RegisterRequest $request)
     {
         try{
-            $data = $request->all();
-            if(isset($data['domain'])) {
-                if(isset($data['domain_name'])) {
+            $post = $request->all();
+            if(isset($post['domain'])) {
+                if(isset($post['domain_name'])) {
                     $reader = $this->readerService->save($request->validated());
                     $blog = $this->profileService->getProfile();
                     $signature = $this->authService->emailVerificationSignature($reader);
-                    $emailLink = 'http://'.$data['domain_name'].'/'.$signature;
+                    $emailLink = 'http://'.$post['domain_name'].'/confirm_email'.'/'.$signature;
                     try{
-                        $fromAddress = env($data['domain'].'_MAIL_HOST');
+                        $fromAddress = env($post['domain'].'_MAIL_HOST');
                         $data = ['name'=>$reader->name, 'link'=>$emailLink, 'blog'=>$blog];
-                        Mail::mailer($data['domain'])->send('mails.verify_email', $data, function($message) use($reader, $blog, $fromAddress) {
+                        Mail::mailer($post['domain'])->send('mails.verify_email', $data, function($message) use($reader, $blog, $fromAddress) {
                             $message->to($reader->email, $reader->name)->subject
                                 ('Verify your Email');
                             $message->from($fromAddress, $blog->blog_name);
