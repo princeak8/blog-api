@@ -95,6 +95,10 @@ Route::group([
     ], function () {
         Route::post('/login', 'LoginController@login');
         Route::post('/register', 'RegisterController@register');
+        Route::post('/verify_email_link', 'RegisterController@verify_email');
+
+        //test
+        Route::post('/test_email_verification', 'RegisterController@test_email_verification');
     });
 
     //Settings Routes

@@ -29,6 +29,13 @@ class ReaderService
         $reader->update();
     }
 
+    public function verify_email($reader)
+    {
+        $reader->email_verified = 1;
+        $reader->update();
+        return $reader;
+    }
+
 }
 
 

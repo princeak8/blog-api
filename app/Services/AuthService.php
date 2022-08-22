@@ -11,7 +11,7 @@ use App\Models\Reader;
 
 class AuthService
 {
-    public function emailVerificationLink($reader, $domain)
+    public function emailVerificationSignature($reader)
     {
         do{
             $token = '';
@@ -22,21 +22,33 @@ class AuthService
             $signature = hash('md5', $token);
             $exists = $this->getToken($reader->id, $token);
         } while ($exists);
-        $this->saveSignature($reader->id, $signature);
-        return env('APP_URL').$domain.'/'.'verify_email/'.$reader->email.'/'.$signature;
+        $this->saveToken($reader->id, $token);
+        return $signature;
     }
 
     public function getToken($reader_id, $token)
     {
-        return EmailVerification::where('reader_id', $reader_id)->where('signature', hash('md5', $token))->first();
+        return EmailVerification::where('reader_id', $reader_id)->where('token', $token)->first();
     }
 
-    public function saveSignature($reader_id, $signature)
+    public function getEmailTokenBySignature($signature)
     {
-        $emailSignature = new EmailVerification;
-        $emailSignature->reader_id = $reader_id;
-        $emailSignature->signature = $signature;
-        $emailSignature->save();
+        $emailTokens = EmailVerification::all();
+        foreach($emailTokens as $emailToken) {
+            $tokenSignature = hash('md5', $emailToken->token);
+            if($signature == $tokenSignature) {
+                return $emailToken;
+            }
+        }
+        return false;
+    }
+
+    public function saveToken($reader_id, $token)
+    {
+        $emailToken = new EmailVerification;
+        $emailToken->reader_id = $reader_id;
+        $emailToken->token = $token;
+        $emailToken->save();
     }
 
     public function clearUserTokens($reader_id)
@@ -47,10 +59,10 @@ class AuthService
         }
     }
 
-    public function verifySignature($reader, $signature)
+    public function verifySignature($signature)
     {
-        $signature = $this->getToken($reader->id, $signature);
-        return ($signature) ? 1 : 0;
+        $emailToken = $this->getEmailTokenBySignature($signature);
+        return ($emailToken) ? $emailToken->reader : false;
     }
 }
 

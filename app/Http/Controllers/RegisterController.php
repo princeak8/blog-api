@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Requests\RegisterRequest;
 use Mail;
+use Illuminate\Support\Facades\Validator;
 
 use App\Services\ReaderService;
 use App\Services\AuthService;
@@ -34,24 +36,32 @@ class RegisterController extends Controller
         try{
             $data = $request->all();
             if(isset($data['domain'])) {
-                $reader = $this->readerService->save($request->validated());
-                $blog = $this->profileService->getProfile();
-                $emailLink = $this->authService->emailVerificationLink($reader, $data['domain']);
-                // try{
-                //     $fromAddress = env($data['domain'].'_MAIL_HOST');
-                //     $data = ['name'=>$reader->name, 'link'=>$emailLink, 'blog'=>$blog];
-                //     Mail::mailer($data['domain'])->send('mails.verify_email', $data, function($message) use($reader, $blog) {
-                //         $message->to($reader->email, $reader->name)->subject
-                //             ('Verify your Email');
-                //         $message->from($fromAddress, $blog->blog_name);
-                //     });
-                // }catch(\Throwable $th) {
-                //     \Log::stack(['project'])->info('could not send email '.$th->getMessage());
-                // }
-                return response()->json([
-                    'statusCode' => 200,
-                    'message' => 'Registeration Successful.. An Email confirmation link has been sent to your mail. Confirm your email and login'
-                ], 200);
+                if(isset($data['domain_name'])) {
+                    $reader = $this->readerService->save($request->validated());
+                    $blog = $this->profileService->getProfile();
+                    $signature = $this->authService->emailVerificationSignature($reader);
+                    $emailLink = 'http://'.$data['domain_name'].'/'.$signature;
+                    try{
+                        $fromAddress = env($data['domain'].'_MAIL_HOST');
+                        $data = ['name'=>$reader->name, 'link'=>$emailLink, 'blog'=>$blog];
+                        Mail::mailer($data['domain'])->send('mails.verify_email', $data, function($message) use($reader, $blog, $fromAddress) {
+                            $message->to($reader->email, $reader->name)->subject
+                                ('Verify your Email');
+                            $message->from($fromAddress, $blog->blog_name);
+                        });
+                    }catch(\Throwable $th) {
+                        \Log::stack(['project'])->info('could not send email '.$th->getMessage());
+                    }
+                    return response()->json([
+                        'statusCode' => 200,
+                        'message' => 'Registeration Successful.. An Email confirmation link has been sent to your mail. Confirm your email and login'
+                    ], 200);
+                }else{
+                    return response()->json([
+                        'statusCode' => 500,
+                        'message' => 'Domain Name is not set in the post data'
+                    ], 500);
+                }
             }else{
                 return response()->json([
                     'statusCode' => 500,
@@ -67,15 +77,49 @@ class RegisterController extends Controller
         }
     }
 
-    public function verify_email($domain, $email, $signature)
+    public function verify_email(Request $request)
     {
+        $post = $request->all();
         try{
-            $blog = $this->profileService->getProfile();
-            $reader = $this->readerService->getReaderByEmail($email);
-            if($reader) {
-                //$this->authService->ver
+            $validator = Validator::make($post, [
+                'signature' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+            $user = $this->authService->verifySignature($post['signature']);
+            if($user) {
+                $user = $this->readerService->verify_email($user); //Update the verified status of the user
+                $this->authService->clearUserTokens($user->id); //delete all the email verification tokens from the db
+                //Attempt to login the user automatically
+                $token = ($reader = Auth::guard('reader')->getProvider()->retrieveByCredentials(["email"=>$user->email]))
+                ? Auth::guard('reader')->login($reader)
+                : false;
+                if($token) { //if login was successful
+                    $user = new ReaderResource($user);
+                    return response()->json([
+                        'statusCode' => 200,
+                        'message' => 'Email Link Confirmed Succesfully',
+                        'data' => [
+                            'token' => $token,
+                            'token_type' => 'bearer',
+                            'token_expires_in' => Auth::guard('reader')->factory()->getTTL() * 60, 
+                            'user' => $user
+                        ]
+                    ], 200);
+                }else{
+                    //If login was not successful
+                    return response()->json([
+                        'statusCode' => 201,
+                        'message' => 'Email Link Confirmed Succesfully'
+                    ], 201);
+                }
             }else{
-                redirect('https://'.$domain.'.com/email_user_not_found');
+                return response()->json([
+                    'statusCode' => 402,
+                    'message' => 'Email Link Verification Failed'
+                ], 402);
             }
             
         }catch (\Throwable $th) {
@@ -84,6 +128,41 @@ class RegisterController extends Controller
                 'statusCode' => 500,
                 'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
             ], 500);
+        }
+    }
+
+    public function test_email_verification(Request $request)
+    {
+        $post = $request->all();
+        $reader = $this->readerService->getReaderByEmail($post['email']);
+        if($reader) {
+            $signature = $this->authService->emailVerificationSignature($reader);
+            $user = $this->authService->verifySignature($signature);
+            if($user) {
+                $user = $this->readerService->verify_email($user);
+                $this->authService->clearUserTokens($user->id);
+                $token = ($reader = Auth::guard('reader')->getProvider()->retrieveByCredentials(["email"=>$user->email]))
+                ? Auth::guard('reader')->login($reader)
+                : false;
+                if($token) {
+                    $user = new ReaderResource($user);
+                    return response()->json([
+                        'statusCode' => 200,
+                        'data' => [
+                            'token' => $token,
+                            'token_type' => 'bearer',
+                            'token_expires_in' => Auth::guard('reader')->factory()->getTTL() * 60, 
+                            'user' => $user
+                        ]
+                    ], 200);
+                }else{
+                    echo "Login failed";
+                }
+            }else{
+                echo "verification failed";
+            }
+        }else{
+            echo "user was not found";
         }
     }
 }
