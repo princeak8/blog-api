@@ -98,29 +98,30 @@ class RegisterController extends Controller
             if($user) {
                 $user = $this->readerService->verify_email($user); //Update the verified status of the user
                 $this->authService->clearUserTokens($user->id); //delete all the email verification tokens from the db
+
+                return response()->json([
+                    'statusCode' => 201,
+                    'message' => 'Email Link Confirmed Succesfully'
+                ], 201);
                 //Attempt to login the user automatically
-                $token = ($reader = Auth::guard('reader')->getProvider()->retrieveByCredentials(["email"=>$user->email]))
-                ? Auth::guard('reader')->login($reader)
-                : false;
-                if($token) { //if login was successful
-                    $user = new ReaderResource($user);
-                    return response()->json([
-                        'statusCode' => 200,
-                        'message' => 'Email Link Confirmed Succesfully',
-                        'data' => [
-                            'token' => $token,
-                            'token_type' => 'bearer',
-                            'token_expires_in' => Auth::guard('reader')->factory()->getTTL() * 60, 
-                            'user' => $user
-                        ]
-                    ], 200);
-                }else{
+                // $token = ($reader = Auth::guard('reader')->getProvider()->retrieveByCredentials(["email"=>$user->email]))
+                // ? Auth::guard('reader')->login($reader)
+                // : false;
+                // if($token) { //if login was successful
+                //     $user = new ReaderResource($user);
+                //     return response()->json([
+                //         'statusCode' => 200,
+                //         'message' => 'Email Link Confirmed Succesfully',
+                //         'data' => [
+                //             'token' => $token,
+                //             'token_type' => 'bearer',
+                //             'token_expires_in' => Auth::guard('reader')->factory()->getTTL() * 60, 
+                //             'user' => $user
+                //         ]
+                //     ], 200);
+                // }else{
                     //If login was not successful
-                    return response()->json([
-                        'statusCode' => 201,
-                        'message' => 'Email Link Confirmed Succesfully'
-                    ], 201);
-                }
+                    
             }else{
                 return response()->json([
                     'statusCode' => 402,
