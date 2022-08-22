@@ -42,20 +42,26 @@ class RegisterController extends Controller
                     $signature = $this->authService->emailVerificationSignature($reader);
                     $emailLink = 'http://'.$post['domain_name'].'/confirm_email'.'/'.$signature;
                     try{
-                        $fromAddress = env($post['domain'].'_MAIL_HOST');
+                        $fromAddress = 'registration@'.env($post['domain'].'_DOMAIN_NAME');
                         $data = ['name'=>$reader->name, 'link'=>$emailLink, 'blog'=>$blog];
                         Mail::mailer($post['domain'])->send('mails.verify_email', $data, function($message) use($reader, $blog, $fromAddress) {
                             $message->to($reader->email, $reader->name)->subject
                                 ('Verify your Email');
                             $message->from($fromAddress, $blog->blog_name);
                         });
+
+                        return response()->json([
+                            'statusCode' => 200,
+                            'message' => 'Registeration Successful.. An Email confirmation link has been sent to your mail. Confirm your email and login'
+                        ], 200);
                     }catch(\Throwable $th) {
                         \Log::stack(['project'])->info('could not send email '.$th->getMessage());
+                        return response()->json([
+                            'statusCode' => 200,
+                            'message' => 'Registeration Successful.. An Email confirmation link has been sent to your mail. Confirm your email and login'
+                        ], 200);
                     }
-                    return response()->json([
-                        'statusCode' => 200,
-                        'message' => 'Registeration Successful.. An Email confirmation link has been sent to your mail. Confirm your email and login'
-                    ], 200);
+                    
                 }else{
                     return response()->json([
                         'statusCode' => 500,
