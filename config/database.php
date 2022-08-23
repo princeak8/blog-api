@@ -145,39 +145,50 @@ $dbConfig = [
     ],
 
 ];
-function add_new_connection($dbConfig, $connection_name, $db_name, $connection_type) {
+function add_new_connection($dbConfig, $connection_name, $connection_type) {
     switch($connection_type) {
         case "sqlite" :
             $dbConfig['connections'][$connection_name] =  $dbConfig['connections'][$connection_type];
-            $dbConfig['connections'][$connection_name]['database'] = $db_name;
+            $dbConfig['connections'][$connection_name]['database'] = env($connection_name.'_DB_DATABASE');
+            $dbConfig['connections'][$connection_name]['username'] = env($connection_name.'_DB_USERNAME');
+            $dbConfig['connections'][$connection_name]['password'] = env($connection_name.'_DB_PASSWORD');
             break;
         case "mysql" :
                 $dbConfig['connections'][$connection_name] =  $dbConfig['connections'][$connection_type];
-                $dbConfig['connections'][$connection_name]['database'] = $db_name;
+                $dbConfig['connections'][$connection_name]['database'] = env($connection_name.'_DB_DATABASE');
+                $dbConfig['connections'][$connection_name]['username'] = env($connection_name.'_DB_USERNAME');
+                $dbConfig['connections'][$connection_name]['password'] = env($connection_name.'_DB_PASSWORD');
                 break;
         case "pgsql" :
                 $dbConfig['connections'][$connection_name] =  $dbConfig['connections'][$connection_type];
-                $dbConfig['connections'][$connection_name]['database'] = $db_name;
+                $dbConfig['connections'][$connection_name]['database'] = env($connection_name.'_DB_DATABASE');
+                $dbConfig['connections'][$connection_name]['username'] = env($connection_name.'_DB_USERNAME');
+                $dbConfig['connections'][$connection_name]['password'] = env($connection_name.'_DB_PASSWORD');
                 break;
         case "sqlsrv" :
                 $dbConfig['connections'][$connection_name] =  $dbConfig['connections'][$connection_type];
-                $dbConfig['connections'][$connection_name]['database'] = $db_name;
+                $dbConfig['connections'][$connection_name]['database'] = env($connection_name.'_DB_DATABASE');
+                $dbConfig['connections'][$connection_name]['username'] = env($connection_name.'_DB_USERNAME');
+                $dbConfig['connections'][$connection_name]['password'] = env($connection_name.'_DB_PASSWORD');
                 break;
         default :
                 $dbConfig['connections'][$connection_name] =  $dbConfig['connections'][$connection_type];
-                $dbConfig['connections'][$connection_name]['database'] = $db_name;
+                $dbConfig['connections'][$connection_name]['database'] = env($connection_name.'_DB_DATABASE');
+                $dbConfig['connections'][$connection_name]['username'] = env($connection_name.'_DB_USERNAME');
+                $dbConfig['connections'][$connection_name]['password'] = env($connection_name.'_DB_PASSWORD');
                 break;       
     }
     return $dbConfig;
 } 
 
 $newConnections = [
-    ["name"=>"blog", "db_name"=>"blog", "type"=>"mysql"]
+    ["name"=>"blog", "type"=>"mysql"],
+    ["name"=>"nnedi", "type"=>"mysql"]
 ];
 
 if(count($newConnections) > 0) {
     foreach($newConnections as $connection) {
-        $dbConfig = add_new_connection($dbConfig, $connection['name'], $connection['db_name'], $connection['type']);
+        $dbConfig = add_new_connection($dbConfig, $connection['name'], $connection['type']);
     }
 }
 
