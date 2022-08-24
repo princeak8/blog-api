@@ -12,12 +12,14 @@ use App\Models\File;
 class PostService 
 {
 
-    public function getPost($id, $withComments=false)
+    public function getPost($id)
     {
-        //dd($id);
-        //return Post::with('comments')->where('id', $id)->first();
-        //return Post::find($id);
-        return (!$withComments) ? Post::find($id) : Post::with('comments')->where('id', $id)->first();
+        return Post::find($id);
+    }
+
+    public function getPostByTitle($title)
+    {
+        return Post::where('title', $title)->first();
     }
 
     public function posts()

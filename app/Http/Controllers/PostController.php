@@ -69,10 +69,11 @@ class PostController extends Controller
         }
     }
 
-    public function post($post_id)
+    public function post($title)
     {
         try{
-            $post = $this->postService->getPost($post_id, true);
+            $post = $this->postService->getPostByTitle($title);
+
             //dd($post);
             return response()->json([
                 'statusCode' => 200,
