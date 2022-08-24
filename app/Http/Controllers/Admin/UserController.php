@@ -70,7 +70,7 @@ class UserController extends Controller
                 return response()->json($validator->errors(), 422);
             }
             $user = $this->readerService->getReaderByEmail(auth::user()->email);
-            if(!$user) {
+            if($user) {
                 //dd($post);
                 $this->readerService->updatePassword($user, $request->get('password'));
                 return response()->json([
@@ -80,7 +80,7 @@ class UserController extends Controller
             }else{
                 return response()->json([
                     'statusCode' => 402,
-                    'message' => 'User does not Exists='.auth::user()->email
+                    'message' => 'User does not Exists'
                 ], 402);
             }
         }catch(\Exception $e){
