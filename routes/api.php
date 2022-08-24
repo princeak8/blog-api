@@ -39,6 +39,8 @@ Route::group([
     ], function () {
         Route::get('/{user_id}', 'UserController@getProfile');
         Route::post('/create', 'UserController@create_profile');
+        //Changing the reader password for the admin
+        Route::post('/change_password', 'UserController@change_password');
     });
         
 

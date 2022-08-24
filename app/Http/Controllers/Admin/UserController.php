@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 use App\Http\Requests\CreateProfileRequest;
@@ -47,7 +48,40 @@ class UserController extends Controller
                     'statusCode' => 402,
                     'data' => new ProfileResource($profile),
                     'message' => 'Profile Exists'
+                ], 402);
+            }
+        }catch(\Exception $e){
+            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            return response()->json([
+                'statusCode' => 500,
+                'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
+            ], 500);
+        }
+    }
+
+    public function change_password(Request $request)
+    {
+        try{
+            $validator = Validator::make($request->all(), [
+                'password' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+            $user = $this->readerService->getReaderByEmail(auth::user()->email);
+            if(!$user) {
+                //dd($post);
+                $this->readerService->updatePassword($user, $request->get('password'));
+                return response()->json([
+                    'statusCode' => 200,
+                    'message' => 'Updated Successfully'
                 ], 200);
+            }else{
+                return response()->json([
+                    'statusCode' => 402,
+                    'message' => 'User does not Exists'
+                ], 402);
             }
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());

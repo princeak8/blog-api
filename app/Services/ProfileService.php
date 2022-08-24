@@ -29,7 +29,6 @@ class ProfileService
 
     public function update($profile, $data)
     {
-
         if(isset($data['name'])) $profile->name = $data['name'];
         if(isset($data['about'])) $profile->about = $data['about'];
         $profile->update();

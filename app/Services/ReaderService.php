@@ -36,6 +36,12 @@ class ReaderService
         return $reader;
     }
 
+    public function updatePassword($reader, $password)
+    {
+        $reader->password = $password;
+        $reader->update();
+    }
+
 }
 
 
