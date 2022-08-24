@@ -80,7 +80,7 @@ class UserController extends Controller
             }else{
                 return response()->json([
                     'statusCode' => 402,
-                    'message' => 'User does not Exists'
+                    'message' => 'User does not Exists='.auth::user()->email
                 ], 402);
             }
         }catch(\Exception $e){
