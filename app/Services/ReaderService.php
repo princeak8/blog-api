@@ -17,9 +17,19 @@ class ReaderService
         return Reader::where('email', $email)->first();
     }
 
+    public function getReaderByProvider($provider_name, $provider_id)
+    {
+        return Reader::where('provider_name', $provider_name)->where('provider_id', $provider_id)->first();
+    }
+
     public function save($data)
     {
         $data['password'] = bcrypt($data['password']);
+        return Reader::create($data);
+    }
+
+    public function saveGoogleUser($data)
+    {
         return Reader::create($data);
     }
 

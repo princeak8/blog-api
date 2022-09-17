@@ -183,7 +183,8 @@ function add_new_connection($dbConfig, $connection_name, $connection_type) {
 
 $newConnections = [
     ["name"=>"blog", "type"=>"mysql"],
-    ["name"=>"nnedi", "type"=>"mysql"]
+    ["name"=>"nnedi", "type"=>"mysql"],
+    ["name"=>"princeak", "type"=>"mysql"]
 ];
 
 if(count($newConnections) > 0) {

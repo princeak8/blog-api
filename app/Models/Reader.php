@@ -24,6 +24,8 @@ class Reader extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'provider_id',
+        'provider_name',
         'is_admin'
     ];
 

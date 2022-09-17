@@ -9,6 +9,7 @@
         "cloudinary-labs/cloudinary-laravel": "^2.0",
         "doctrine/dbal": "^3.3",
         "fruitcake/laravel-cors": "^2.0",
+        "google/apiclient": "^2.12",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
