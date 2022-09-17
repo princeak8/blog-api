@@ -29,8 +29,9 @@ class ProfileController extends Controller
                 'statusCode' => 200,
                 'data' => new ProfileResource($profile)
             ], 200);
-        }catch(\Exception $e){
+        }catch(\Throwable $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            throw $e;
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
