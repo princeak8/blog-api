@@ -138,6 +138,12 @@ Route::group([
         Route::post('/reply', 'CommentController@saveReply');
     });
 
+    //Contact Message
+    Route::group([
+    ], function () {
+        Route::post('/send_message', 'MessageController@save');
+    });
+
     //Test
     Route::get('/send_email', 'MailController@test');
     
