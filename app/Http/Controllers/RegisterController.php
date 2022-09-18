@@ -40,7 +40,7 @@ class RegisterController extends Controller
                     $reader = $this->readerService->save($request->validated());
                     $blog = $this->profileService->getProfile();
                     $signature = $this->authService->emailVerificationSignature($reader);
-                    $emailLink = 'http://'.$post['domain_name'].'/confirm_email'.'/'.$signature;
+                    $emailLink = $post['domain_name'].'/confirm_email'.'/'.$signature;
                     try{
                         $fromAddress = 'registration@'.env($post['domain'].'_DOMAIN_NAME');
                         $data = ['name'=>$reader->name, 'link'=>$emailLink, 'blog'=>$blog];
