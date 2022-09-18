@@ -34,6 +34,7 @@ class PostController extends Controller
     {
         try{
             if(is_int($page)) {
+                dd($page);
                 $posts = $this->postService->paginatedPosts($page);
                 $count = $this->postService->postsCount();
                 return response()->json([
