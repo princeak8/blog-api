@@ -33,16 +33,23 @@ class PostController extends Controller
     public function posts($page=1)
     {
         try{
-            $posts = $this->postService->paginatedPosts($page);
-            $count = $this->postService->postsCount();
-            return response()->json([
-                'statusCode' => 200,
-                'data' => PostResource::collection($posts),
-                'meta' => [
-                    'totalPosts' => $count,
-                    'perPage' => Post::$per_page
-                ]
-            ], 200);
+            if(is_int($page)) {
+                $posts = $this->postService->paginatedPosts($page);
+                $count = $this->postService->postsCount();
+                return response()->json([
+                    'statusCode' => 200,
+                    'data' => PostResource::collection($posts),
+                    'meta' => [
+                        'totalPosts' => $count,
+                        'perPage' => Post::$per_page
+                    ]
+                ], 200);
+            }else{
+                return response()->json([
+                    'statusCode' => 402,
+                    'message' => "Invalid page Number"
+                ], 402);
+            }
         }catch(\Exception $e){
             \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
             return response()->json([
