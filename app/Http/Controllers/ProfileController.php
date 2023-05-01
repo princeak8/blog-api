@@ -10,7 +10,7 @@ use App\Services\ProfileService;
 
 class ProfileController extends Controller
 {
-    private $postService;
+    private $profileService;
 
     /**
      * Create a new PostController instance.

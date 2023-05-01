@@ -54,6 +54,7 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
+        'logAfterRequest' => 'App\Http\Middleware\LogAfterRequest',
         'setDB' => 'App\Http\Middleware\SetDB',
         'ignoreRouteParam' => 'App\Http\Middleware\IgnoreRouteParam',
         'blogAuth' => 'App\Http\Middleware\BlogAuth',

@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => 'v1/{db}/admin/',
     'namespace' => 'Admin',
-    'middleware' => ['setDB', 'ignoreRouteParam']
+    'middleware' => ['setDB', 'ignoreRouteParam', 'logAfterRequest']
 
 ], function () {
     //Auth Routes
@@ -87,7 +87,7 @@ Route::group([
 //Public Routes
 Route::group([
     'prefix' => 'v1/{db}/',
-    'middleware' => ['setDB', 'ignoreRouteParam']
+    'middleware' => ['setDB', 'ignoreRouteParam', 'logAfterRequest']
 
 ], function () {
 
