@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Log;
+
 use App\Http\Requests\SavePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 
@@ -53,7 +55,7 @@ class PostController extends Controller
                 ], 402);
             }
         }catch(\Exception $e){
-            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
@@ -70,7 +72,7 @@ class PostController extends Controller
                 'data' => PostResource::collection($posts)
             ], 200);
         }catch(\Exception $e){
-            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
@@ -82,14 +84,18 @@ class PostController extends Controller
     {
         try{
             $post = $this->postService->getPostByTitle($title);
-
+            try{
+                $this->postService->increaseViewCount($post);
+            }catch(\Exception $e){
+                Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            }
             //dd($post);
             return response()->json([
                 'statusCode' => 200,
                 'data' => ($post) ? new PostResource($post) : []
             ], 200);
         }catch(\Exception $e){
-            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
             //dd($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
             return response()->json([
                 'statusCode' => 500,
@@ -116,7 +122,7 @@ class PostController extends Controller
                 ], 404);
             }
         }catch(\Exception $e){
-            \Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
+            Log::stack(['project'])->info($e->getMessage().' in '.$e->getFile().' at Line '.$e->getLine());
             return response()->json([
                 'statusCode' => 500,
                 'message' => 'An error occured while trying to perform this operation, Please try again later or contact support'
