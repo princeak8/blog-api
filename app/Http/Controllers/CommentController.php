@@ -24,7 +24,13 @@ class CommentController extends Controller
      */
     
     public function __construct() {
-        $this->middleware('auth:reader');
+        // $this->middleware('auth:reader');
+        if ( Auth::guard('reader')->check())
+        {
+            dd(auth::user('reader')->id);
+        }else{
+            dd('not authenticated');
+        }
         $this->commentService = new CommentService;
     }
 

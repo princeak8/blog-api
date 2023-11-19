@@ -35,6 +35,7 @@ class RegisterController extends Controller
     {
         try{
             $post = $request->all();
+            // dd($post['domain_name']);
             if(isset($post['domain'])) {
                 if(isset($post['domain_name'])) {
                     $reader = $this->readerService->save($request->validated());
