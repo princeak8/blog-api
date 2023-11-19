@@ -29,6 +29,11 @@ class LoginController extends Controller
         }
         //dd(Auth::guard('reader')->user());
         $user = new ReaderResource(Auth::guard('reader')->user());
+        if ( Auth::guard('reader')->check()){
+            dd('authenticated');
+        }else{
+            dd('not authenticated');
+        }
         return response()->json([
             'statusCode' => 200,
             'data' => [

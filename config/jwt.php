@@ -57,7 +57,8 @@ return [
         |
         */
 
-        'public' => 'file://'.storage_path(env('JWT_PUBLIC_KEY')),//env('JWT_PUBLIC_KEY'),
+        // 'public' => 'file://'.storage_path(env('JWT_PUBLIC_KEY')),//env('JWT_PUBLIC_KEY'),
+        'public' => env('JWT_PUBLIC_KEY'),
 
         /*
         |--------------------------------------------------------------------------
@@ -70,7 +71,8 @@ return [
         |
         */
 
-        'private' => 'file://'.storage_path(env('JWT_PRIVATE_KEY')),//env('JWT_PRIVATE_KEY'),
+        // 'private' => 'file://'.storage_path(env('JWT_PRIVATE_KEY')),//env('JWT_PRIVATE_KEY'),
+        'private' => env('JWT_PRIVATE_KEY'),
 
         /*
         |--------------------------------------------------------------------------

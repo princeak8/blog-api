@@ -11,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Reader extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
 
     protected $guard = 'reader';
 
