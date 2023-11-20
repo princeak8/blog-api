@@ -31,7 +31,7 @@ class CommentController extends Controller
         }catch(\Exception $e){
             dd($e->getMessage());
         }
-        dd(Auth::guard('reader')->check());
+        dd(Auth::check());
         if ( Auth::guard('reader')->check())
         {
             dd(auth::user('reader')->id);
