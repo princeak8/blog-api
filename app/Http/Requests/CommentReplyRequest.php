@@ -26,7 +26,7 @@ class CommentReplyRequest extends FormRequest
     public function rules()
     {
         return [
-            'reader_id' => 'required|integer',
+            // 'reader_id' => 'required|integer',
             'comment_id' => 'required|integer',
             'message' => 'required|string|min:1',
         ];

@@ -44,7 +44,7 @@ class CommentController extends Controller
     public function save(SaveCommentRequest $request)
     {
         $input = $request->all();
-        $input['reader_id'] = auth::user('reader')->id;
+        $input['reader_id'] = Auth::user()->id;
         try{
             $comment = $this->commentService->save($input);
             $comments = $this->commentService->getCommentsByPostId($input['post_id']);
@@ -65,7 +65,7 @@ class CommentController extends Controller
     public function saveReply(CommentReplyRequest $request)
     {
         $input = $request->all();
-        $input['reader_id'] = auth::user('reader')->id;
+        $input['reader_id'] = Auth::user()->id;
         try{
             $this->commentService->saveReply($input);
             $replies = $this->commentService->getRepliesByCommentId($input['comment_id']);

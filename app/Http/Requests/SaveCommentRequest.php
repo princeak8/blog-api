@@ -26,7 +26,7 @@ class SaveCommentRequest extends FormRequest
     public function rules()
     {
         return [
-            'reader_id' => 'required|integer',
+            // 'reader_id' => 'required|integer',
             'post_id' => 'required|integer',
             'message' => 'required|string|min:1',
         ];
