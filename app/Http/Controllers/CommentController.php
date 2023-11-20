@@ -25,7 +25,12 @@ class CommentController extends Controller
     
     public function __construct(Request $request) {
         // $this->middleware('auth:reader');
-        dd($request->bearerToken());
+        // dd($request->bearerToken());
+        try{
+            Auth::guard('reader')->check();
+        }catch(\Exception $e){
+            dd($e->getMessage());
+        }
         if ( Auth::guard('reader')->check())
         {
             dd(auth::user('reader')->id);
